@@ -110,9 +110,9 @@ public class Simulator
         }
         time++;
 
-        List<Animal> animals = field.getAnimals();
-        for (Animal anAnimal : animals) {
-            anAnimal.act(field, nextFieldState);
+        List<LivingEntity> animals = field.getEntities();
+        for (LivingEntity anEntity : animals) {
+            anEntity.act(field, nextFieldState);
         }
         
         // Replace the old state with the new one.

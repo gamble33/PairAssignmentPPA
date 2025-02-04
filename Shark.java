@@ -35,7 +35,7 @@ public class Shark extends GenderedAnimal
      */
     public Shark(Boolean randomAge, Location location)
     {
-        super(location, Shark.class);
+        super(location);
 
         foodSources.add(Clownfish.class);
         breedingAge = BREEDING_AGE;

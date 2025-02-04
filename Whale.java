@@ -37,7 +37,7 @@ public class Whale extends GenderedAnimal
      */
     public Whale(Boolean randomAge, Location location)
     {
-        super(location, Whale.class);
+        super(location);
 
         foodSources.add(Clownfish.class);
         breedingAge = BREEDING_AGE;

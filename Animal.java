@@ -38,8 +38,8 @@ public abstract class Animal extends LivingEntity
     }
 
     /**
-     * Look for rabbits adjacent to the current location.
-     * Only the first live rabbit is eaten.
+     * Look for food sources adjacent to the current location.
+     * Only the first live food source is eaten.
      * @param field The field currently occupied.
      * @return Where food was found, or null if it wasn't.
      */
@@ -65,23 +65,23 @@ public abstract class Animal extends LivingEntity
         return foodLocation;
     }
 
-
     /**
      * Check whether this fox is to give birth at this step.
      * New births will be made into free adjacent locations.
      * @param freeLocations The locations that are free in the current field.
      */
-    protected void giveBirth(Field nextFieldState, List<Location> freeLocations, Class<?> type)
+    protected void giveBirth(Field nextFieldState, List<Location> freeLocations)
     {
         // New foxes are born into adjacent locations.
         // Get a list of adjacent free locations.
         int births = generateNumberOfBirths();
+        Class<?> runtimeClass = this.getClass();
         if(births > 0) {
             for (int b = 0; b < births && !freeLocations.isEmpty(); b++) {
                 Location loc = freeLocations.remove(0);
 
                 try {
-                    Animal baby = (Animal) type.getConstructor(Boolean.class, Location.class).newInstance(false, loc);
+                    Animal baby = (Animal) runtimeClass.getConstructor(Boolean.class, Location.class).newInstance(false, loc);
                     nextFieldState.placeAnimal(baby, loc);
                 } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
                          InvocationTargetException e) {
@@ -126,6 +126,4 @@ public abstract class Animal extends LivingEntity
             setDead();
         }
     }
-
-
 }

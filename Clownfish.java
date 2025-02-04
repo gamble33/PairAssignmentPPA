@@ -58,7 +58,7 @@ public class Clownfish extends Animal
             List<Location> freeLocations = 
                 nextFieldState.getFreeAdjacentLocations(getLocation());
             if(!freeLocations.isEmpty()) {
-                giveBirth(nextFieldState, freeLocations, Clownfish.class);
+                giveBirth(nextFieldState, freeLocations);
             }
             // Try to move into a free location.
             if(! freeLocations.isEmpty()) {

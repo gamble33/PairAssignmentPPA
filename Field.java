@@ -17,7 +17,7 @@ public class Field
     // Animals mapped by location.
     private final Map<Location, LivingEntity> field = new HashMap<>();
     // The animals.
-    private final List<Animal> animals = new ArrayList<>();
+    private final List<LivingEntity> entities = new ArrayList<>();
 
     /**
      * Represent a field of the given dimensions.
@@ -34,18 +34,18 @@ public class Field
      * Place an animal at the given location.
      * If there is already an animal at the location it will
      * be lost.
-     * @param anAnimal The animal to be placed.
+     * @param anEntity The animal to be placed.
      * @param location Where to place the animal.
      */
-    public void placeAnimal(Animal anAnimal, Location location)
+    public void placeAnimal(LivingEntity anEntity, Location location)
     {
         assert location != null;
         Object other = field.get(location);
         if(other != null) {
-            animals.remove(other);
+            entities.remove(other);
         }
-        field.put(location, anAnimal);
-        animals.add(anAnimal);
+        field.put(location, anEntity);
+        entities.add(anEntity);
     }
     
     /**
@@ -151,15 +151,15 @@ public class Field
     {
         boolean rabbitFound = false;
         boolean foxFound = false;
-        Iterator<Animal> it = animals.iterator();
+        Iterator<LivingEntity> it = entities.iterator();
         while(it.hasNext() && ! (rabbitFound && foxFound)) {
-            Animal anAnimal = it.next();
-            if(anAnimal instanceof Clownfish rabbit) {
+            LivingEntity anEntity = it.next();
+            if(anEntity instanceof Clownfish rabbit) {
                 if(rabbit.isAlive()) {
                     rabbitFound = true;
                 }
             }
-            else if(anAnimal instanceof Shark fox) {
+            else if(anEntity instanceof Shark fox) {
                 if(fox.isAlive()) {
                     foxFound = true;
                 }
@@ -171,9 +171,9 @@ public class Field
     /**
      * Get the list of animals.
      */
-    public List<Animal> getAnimals()
+    public List<LivingEntity> getEntities()
     {
-        return animals;
+        return entities;
     }
 
     /**

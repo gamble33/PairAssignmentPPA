@@ -1,8 +1,8 @@
 import java.util.List;
 
 public abstract class GenderedAnimal extends Animal {
-    private boolean isMale;
-    private Class<?> mateType;
+    private final boolean isMale;
+    private static int totalMated = 0;
 
 
     /**
@@ -10,10 +10,9 @@ public abstract class GenderedAnimal extends Animal {
      *
      * @param location The animal's location.
      */
-    public GenderedAnimal(Location location, Class<?> mateType) {
+    public GenderedAnimal(Location location) {
         super(location);
         this.isMale = rand.nextBoolean();
-        this.mateType = mateType;
     }
 
     protected void checkForMate(Field currentField, Field nextFieldState) {
@@ -21,14 +20,15 @@ public abstract class GenderedAnimal extends Animal {
         if (isMale) return;
 
         List<Location> locations = nextFieldState.getAdjacentLocations(getLocation());
+        Class<?> runtimeClass = this.getClass();
         for (Location location : locations) {
-            if (mateType.isInstance(nextFieldState.getLivingEntity(location))) {
+            if (runtimeClass.isInstance(nextFieldState.getLivingEntity(location))) {
                 GenderedAnimal genderedAnimal = (GenderedAnimal) nextFieldState.getLivingEntity(location);
                 // If animals are opposite gender, reproduction occurs.
                 if (genderedAnimal.isMale != this.isMale) {
                     // Give birth.
-                    System.out.println("MATED");
-                    giveBirth(nextFieldState, locations, mateType);
+                    System.out.println("MATED: " + ++totalMated);
+                    giveBirth(nextFieldState, locations);
                     break;
                 }
             }
