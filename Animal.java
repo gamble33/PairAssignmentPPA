@@ -1,3 +1,8 @@
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Common elements of foxes and rabbits.
@@ -5,12 +10,16 @@
  * @author David J. Barnes and Michael Kölling
  * @version 7.0
  */
-public abstract class Animal
+public abstract class Animal extends LivingEntity
 {
-    // Whether the animal is alive or not.
-    private boolean alive;
-    // The animal's position.
-    private Location location;
+    // A shared random number generator to control breeding.
+    protected static final Random rand = Randomizer.getRandom();
+
+    protected int breedingAge;
+    protected double breedingProbability;
+    protected int foodLevel;
+    protected int maxLitterSize;
+    protected List<Class<?>> foodSources;
 
     /**
      * Constructor for objects of class Animal.
@@ -18,50 +27,105 @@ public abstract class Animal
      */
     public Animal(Location location)
     {
-        this.alive = true;
-        this.location = location;
+        super(location);
+        this.foodSources = new ArrayList<>();
     }
-    
-    /**
-     * Act.
-     * @param currentField The current state of the field.
-     * @param nextFieldState The new state being built.
-     */
-    abstract public void act(Field currentField, Field nextFieldState);
-    
-    /**
-     * Check whether the animal is alive or not.
-     * @return true if the animal is still alive.
-     */
-    public boolean isAlive()
-    {
-        return alive;
+
+    @Override
+    public void act(Field currentField, Field nextFieldState) {
+        super.act(currentField, nextFieldState);
+        incrementHunger();
     }
 
     /**
-     * Indicate that the animal is no longer alive.
+     * Look for rabbits adjacent to the current location.
+     * Only the first live rabbit is eaten.
+     * @param field The field currently occupied.
+     * @return Where food was found, or null if it wasn't.
      */
-    protected void setDead()
+    protected Location findFood(Field field)
     {
-        alive = false;
-        location = null;
+        List<Location> adjacent = field.getAdjacentLocations(getLocation());
+        Iterator<Location> it = adjacent.iterator();
+        Location foodLocation = null;
+        while(foodLocation == null && it.hasNext()) {
+            Location loc = it.next();
+            LivingEntity livingEntity = field.getLivingEntity(loc);
+            for (Class<?> type : foodSources) {
+                if(type.isInstance(livingEntity)) {
+                    if(livingEntity.isAlive()) {
+                        livingEntity.setDead();
+                        foodLevel = livingEntity.getFoodValue();
+                        foodLocation = loc;
+                    }
+                }
+            }
+
+        }
+        return foodLocation;
     }
-    
+
+
     /**
-     * Return the animal's location.
-     * @return The animal's location.
+     * Check whether this fox is to give birth at this step.
+     * New births will be made into free adjacent locations.
+     * @param freeLocations The locations that are free in the current field.
      */
-    public Location getLocation()
+    protected void giveBirth(Field nextFieldState, List<Location> freeLocations, Class<?> type)
     {
-        return location;
+        // New foxes are born into adjacent locations.
+        // Get a list of adjacent free locations.
+        int births = generateNumberOfBirths();
+        if(births > 0) {
+            for (int b = 0; b < births && !freeLocations.isEmpty(); b++) {
+                Location loc = freeLocations.remove(0);
+
+                try {
+                    Animal baby = (Animal) type.getConstructor(Boolean.class, Location.class).newInstance(false, loc);
+                    nextFieldState.placeAnimal(baby, loc);
+                } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
+                         InvocationTargetException e) {
+                        // This shouldn't happen.
+                        System.err.println("Error giving birth with finding the right constructor.");
+                        e.getMessage();
+                        e.printStackTrace();
+                        System.exit(1);
+                }
+            }
+        }
     }
-    
+
     /**
-     * Set the animal's location.
-     * @param location The new location.
+     * A fox can breed if it has reached the breeding age.
      */
-    protected void setLocation(Location location)
+    private boolean canBreed()
     {
-        this.location = location;
+        return age >= breedingAge;
     }
+
+    /**
+     * Generate a number representing the number of births,
+     * if it can breed.
+     * @return The number of births (may be zero).
+     */
+    private int generateNumberOfBirths()
+    {
+        int births;
+        if(canBreed() && rand.nextDouble() <= breedingProbability) {
+            births = rand.nextInt(maxLitterSize) + 1;
+        }
+        else {
+            births = 0;
+        }
+        return births;
+    }
+
+    private void incrementHunger() {
+        foodLevel--;
+        if (foodLevel < 0) {
+            setDead();
+        }
+    }
+
+
 }

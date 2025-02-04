@@ -15,9 +15,11 @@ public class Simulator
     // The default depth of the grid.
     private static final int DEFAULT_DEPTH = 80;
     // The probability that a fox will be created in any given grid position.
-    private static final double FOX_CREATION_PROBABILITY = 0.02;
+    private static final double SHARK_CREATION_PROBABILITY = 0.10;
+    // The probability that a whale will be created in any given grid position.
+    private static final double WHALE_CREATION_PROBABILITY = 0.000;
     // The probability that a rabbit will be created in any given position.
-    private static final double RABBIT_CREATION_PROBABILITY = 0.08;    
+    private static final double CLOWNFISH_CREATION_PROBABILITY = 0.08;
 
     // The current state of the field.
     private Field field;
@@ -96,7 +98,7 @@ public class Simulator
         // Replace the old state with the new one.
         field = nextFieldState;
 
-        reportStats();
+        // reportStats();
         view.showStatus(step, field);
     }
         
@@ -119,14 +121,19 @@ public class Simulator
         field.clear();
         for(int row = 0; row < field.getDepth(); row++) {
             for(int col = 0; col < field.getWidth(); col++) {
-                if(rand.nextDouble() <= FOX_CREATION_PROBABILITY) {
+                if(rand.nextDouble() <= WHALE_CREATION_PROBABILITY) {
                     Location location = new Location(row, col);
-                    Fox fox = new Fox(true, location);
+                    Whale whale = new Whale(true, location);
+                    field.placeAnimal(whale, location);
+                }
+                else if(rand.nextDouble() <= SHARK_CREATION_PROBABILITY) {
+                    Location location = new Location(row, col);
+                    Shark fox = new Shark(true, location);
                     field.placeAnimal(fox, location);
                 }
-                else if(rand.nextDouble() <= RABBIT_CREATION_PROBABILITY) {
+                else if(rand.nextDouble() <= CLOWNFISH_CREATION_PROBABILITY) {
                     Location location = new Location(row, col);
-                    Rabbit rabbit = new Rabbit(true, location);
+                    Clownfish rabbit = new Clownfish(true, location);
                     field.placeAnimal(rabbit, location);
                 }
                 // else leave the location empty.

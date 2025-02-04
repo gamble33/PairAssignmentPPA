@@ -15,7 +15,7 @@ public class Field
     // The dimensions of the field.
     private final int depth, width;
     // Animals mapped by location.
-    private final Map<Location, Animal> field = new HashMap<>();
+    private final Map<Location, LivingEntity> field = new HashMap<>();
     // The animals.
     private final List<Animal> animals = new ArrayList<>();
 
@@ -53,7 +53,7 @@ public class Field
      * @param location Where in the field.
      * @return The animal at the given location, or null if there is none.
      */
-    public Animal getAnimalAt(Location location)
+    public LivingEntity getLivingEntity(Location location)
     {
         return field.get(location);
     }
@@ -68,11 +68,11 @@ public class Field
         List<Location> free = new LinkedList<>();
         List<Location> adjacent = getAdjacentLocations(location);
         for(Location next : adjacent) {
-            Animal anAnimal = field.get(next);
-            if(anAnimal == null) {
+            LivingEntity anEntity = field.get(next);
+            if(anEntity == null) {
                 free.add(next);
             }
-            else if(!anAnimal.isAlive()) {
+            else if(!anEntity.isAlive()) {
                 free.add(next);
             }
         }
@@ -119,13 +119,13 @@ public class Field
     public void fieldStats()
     {
         int numFoxes = 0, numRabbits = 0;
-        for(Animal anAnimal : field.values()) {
-            if(anAnimal instanceof Fox fox) {
+        for(LivingEntity anEntity : field.values()) {
+            if(anEntity instanceof Shark fox) {
                 if(fox.isAlive()) {
                     numFoxes++;
                 }
             }
-            else if(anAnimal instanceof Rabbit rabbit) {
+            else if(anEntity instanceof Clownfish rabbit) {
                 if(rabbit.isAlive()) {
                     numRabbits++;
                 }
@@ -154,12 +154,12 @@ public class Field
         Iterator<Animal> it = animals.iterator();
         while(it.hasNext() && ! (rabbitFound && foxFound)) {
             Animal anAnimal = it.next();
-            if(anAnimal instanceof Rabbit rabbit) {
+            if(anAnimal instanceof Clownfish rabbit) {
                 if(rabbit.isAlive()) {
                     rabbitFound = true;
                 }
             }
-            else if(anAnimal instanceof Fox fox) {
+            else if(anAnimal instanceof Shark fox) {
                 if(fox.isAlive()) {
                     foxFound = true;
                 }
