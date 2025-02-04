@@ -14,5 +14,9 @@ public abstract class Plant extends LivingEntity
     {
         super(location);
     }
+
+    private void grow() {
+
+    }
 }
 

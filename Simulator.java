@@ -21,6 +21,11 @@ public class Simulator
     // The probability that a rabbit will be created in any given position.
     private static final double CLOWNFISH_CREATION_PROBABILITY = 0.08;
 
+    private static final int DAY_LENGTH = 600;
+    private static final int NIGHT_LENGTH = 600;
+    private int time = 0;
+
+    private TimeOfDay timeOfDay = TimeOfDay.Day;
     // The current state of the field.
     private Field field;
     // The current step of the simulation.
@@ -89,6 +94,21 @@ public class Simulator
         // Use a separate Field to store the starting state of
         // the next step.
         Field nextFieldState = new Field(field.getDepth(), field.getWidth());
+
+        if (timeOfDay == TimeOfDay.Night) {
+            if (time >= NIGHT_LENGTH){
+                System.out.println("It turned day.");
+                timeOfDay = TimeOfDay.Day;
+                time = 0;
+            }
+        } else if (timeOfDay == TimeOfDay.Day) {
+            if (time >= DAY_LENGTH) {
+                System.out.println("It turned night.");
+                timeOfDay = TimeOfDay.Night;
+                time = 0;
+            }
+        }
+        time++;
 
         List<Animal> animals = field.getAnimals();
         for (Animal anAnimal : animals) {

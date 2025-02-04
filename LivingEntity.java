@@ -4,7 +4,7 @@ public abstract class LivingEntity {
     /// The living entity's position.
     private Location location;
 
-    protected int age;
+    protected int age = 0;
     protected int maxAge;
 
     /// This is the number why which food level increases when this animal is eaten by another.
