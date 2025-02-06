@@ -19,8 +19,6 @@ public class Clownfish extends Animal
     private static final double BREEDING_PROBABILITY = 0.12;
     // The maximum number of births.
     private static final int MAX_LITTER_SIZE = 4;
-    // A shared random number generator to control breeding.
-    private static final Random rand = Randomizer.getRandom();
 
     /**
      * Create a new rabbit. A rabbit may be created with age
@@ -31,18 +29,13 @@ public class Clownfish extends Animal
      */
     public Clownfish(Boolean randomAge, Location location)
     {
-        super(location);
+        super(randomAge, MAX_AGE, location);
         foodValue = 9;
         breedingAge = BREEDING_AGE;
         breedingProbability = BREEDING_PROBABILITY;
         maxLitterSize = MAX_LITTER_SIZE;
 
         foodLevel = 10000;
-        age = 0;
-        maxAge = MAX_AGE;
-        if(randomAge) {
-            age = rand.nextInt(MAX_AGE);
-        }
     }
     
     /**
@@ -51,9 +44,9 @@ public class Clownfish extends Animal
      * @param currentField The field occupied.
      * @param nextFieldState The updated field.
      */
-    public void act(Field currentField, Field nextFieldState)
+    public void act(Field currentField, Field nextFieldState, WorldState worldState)
     {
-        super.act(currentField, nextFieldState);
+        super.act(currentField, nextFieldState, worldState);
         if(isAlive()) {
             List<Location> freeLocations = 
                 nextFieldState.getFreeAdjacentLocations(getLocation());
@@ -64,7 +57,7 @@ public class Clownfish extends Animal
             if(! freeLocations.isEmpty()) {
                 Location nextLocation = freeLocations.get(0);
                 setLocation(nextLocation);
-                nextFieldState.placeAnimal(this, nextLocation);
+                nextFieldState.placeEntity(this, nextLocation);
             }
             else {
                 // Overcrowding.

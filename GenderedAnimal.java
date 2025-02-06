@@ -10,8 +10,8 @@ public abstract class GenderedAnimal extends Animal {
      *
      * @param location The animal's location.
      */
-    public GenderedAnimal(Location location) {
-        super(location);
+    public GenderedAnimal(Boolean randomAge, int maxAge, Location location) {
+        super(randomAge, maxAge, location);
         this.isMale = rand.nextBoolean();
     }
 
@@ -27,7 +27,6 @@ public abstract class GenderedAnimal extends Animal {
                 // If animals are opposite gender, reproduction occurs.
                 if (genderedAnimal.isMale != this.isMale) {
                     // Give birth.
-                    System.out.println("MATED: " + ++totalMated);
                     giveBirth(nextFieldState, locations);
                     break;
                 }

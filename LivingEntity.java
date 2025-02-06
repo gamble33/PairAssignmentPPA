@@ -1,4 +1,8 @@
+import java.util.Random;
+
 public abstract class LivingEntity {
+    /// A shared random number generator to control breeding.
+    protected static final Random rand = Randomizer.getRandom();
     /// Whether the living entity is alive or not.
     private boolean alive;
     /// The living entity's position.
@@ -11,10 +15,14 @@ public abstract class LivingEntity {
     /// The food value of a single rabbit. In effect, this is the
     /// number of steps a fox can go before it has to eat again.
     protected int foodValue;
+    protected int foodLevel = 5;
 
-    public LivingEntity(Location location) {
+    public LivingEntity(Boolean randomAge, int maxAge, Location location) {
         this.alive = true;
         this.location = location;
+        this.maxAge = maxAge;
+
+        if (randomAge) age = rand.nextInt(maxAge);
     }
 
     /**
@@ -22,8 +30,9 @@ public abstract class LivingEntity {
      * @param currentField The current state of the field.
      * @param nextFieldState The new state being built.
      */
-    public void act(Field currentField, Field nextFieldState) {
+    public void act(Field currentField, Field nextFieldState, WorldState worldState) {
         incrementAge();
+        incrementHunger();
     }
 
     public int getFoodValue() {
@@ -72,4 +81,10 @@ public abstract class LivingEntity {
         }
     }
 
+    private void incrementHunger() {
+        foodLevel--;
+        if (foodLevel < 0) {
+            setDead();
+        }
+    }
 }

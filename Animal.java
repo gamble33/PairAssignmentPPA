@@ -17,7 +17,6 @@ public abstract class Animal extends LivingEntity
 
     protected int breedingAge;
     protected double breedingProbability;
-    protected int foodLevel;
     protected int maxLitterSize;
     protected List<Class<?>> foodSources;
 
@@ -25,16 +24,15 @@ public abstract class Animal extends LivingEntity
      * Constructor for objects of class Animal.
      * @param location The animal's location.
      */
-    public Animal(Location location)
+    public Animal(Boolean randomAge, int maxAge, Location location)
     {
-        super(location);
+        super(randomAge, maxAge, location);
         this.foodSources = new ArrayList<>();
     }
 
     @Override
-    public void act(Field currentField, Field nextFieldState) {
-        super.act(currentField, nextFieldState);
-        incrementHunger();
+    public void act(Field currentField, Field nextFieldState, WorldState worldState) {
+        super.act(currentField, nextFieldState, worldState);
     }
 
     /**
@@ -82,7 +80,7 @@ public abstract class Animal extends LivingEntity
 
                 try {
                     Animal baby = (Animal) runtimeClass.getConstructor(Boolean.class, Location.class).newInstance(false, loc);
-                    nextFieldState.placeAnimal(baby, loc);
+                    nextFieldState.placeEntity(baby, loc);
                 } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
                          InvocationTargetException e) {
                         // This shouldn't happen.
@@ -120,10 +118,4 @@ public abstract class Animal extends LivingEntity
         return births;
     }
 
-    private void incrementHunger() {
-        foodLevel--;
-        if (foodLevel < 0) {
-            setDead();
-        }
-    }
 }

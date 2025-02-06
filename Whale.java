@@ -1,4 +1,3 @@
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -37,21 +36,13 @@ public class Whale extends GenderedAnimal
      */
     public Whale(Boolean randomAge, Location location)
     {
-        super(location);
+        super(randomAge, MAX_AGE, location);
 
         foodSources.add(Clownfish.class);
         breedingAge = BREEDING_AGE;
         breedingProbability = BREEDING_PROBABILITY;
         maxLitterSize = MAX_LITTER_SIZE;
-
-        if(randomAge) {
-            age = rand.nextInt(MAX_AGE);
-        }
-        else {
-            age = 0;
-        }
         foodLevel = rand.nextInt(RABBIT_FOOD_VALUE);
-        maxAge = MAX_AGE;
     }
     
     /**
@@ -61,9 +52,9 @@ public class Whale extends GenderedAnimal
      * @param currentField The field currently occupied.
      * @param nextFieldState The updated field.
      */
-    public void act(Field currentField, Field nextFieldState)
+    public void act(Field currentField, Field nextFieldState, WorldState worldState)
     {
-        super.act(currentField, nextFieldState);
+        super.act(currentField, nextFieldState, worldState);
         if(isAlive()) {
             List<Location> freeLocations =
                     nextFieldState.getFreeAdjacentLocations(getLocation());
@@ -79,7 +70,7 @@ public class Whale extends GenderedAnimal
             // See if it was possible to move.
             if(nextLocation != null) {
                 setLocation(nextLocation);
-                nextFieldState.placeAnimal(this, nextLocation);
+                nextFieldState.placeEntity(this, nextLocation);
             }
             else {
                 // Overcrowding.

@@ -43,6 +43,7 @@ public class SimulatorView extends JFrame
         colors = new LinkedHashMap<>();
         setColor(Clownfish.class, Color.orange);
         setColor(Shark.class, Color.gray);
+        setColor(Phytoplankton.class, Color.green);
         setColor(Whale.class, Color.blue);
 
         setTitle("Shark & Fish, etc. Simulation");

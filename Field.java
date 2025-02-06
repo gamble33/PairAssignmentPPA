@@ -31,13 +31,12 @@ public class Field
     }
 
     /**
-     * Place an animal at the given location.
-     * If there is already an animal at the location it will
-     * be lost.
-     * @param anEntity The animal to be placed.
-     * @param location Where to place the animal.
+     * Place a living entity at the given location.
+     * If there is already a living entity at the location it will be lost.
+     * @param anEntity The living entity to be placed.
+     * @param location Where to place the living entity.
      */
-    public void placeAnimal(LivingEntity anEntity, Location location)
+    public void placeEntity(LivingEntity anEntity, Location location)
     {
         assert location != null;
         Object other = field.get(location);

@@ -14,18 +14,21 @@ public class Simulator
     private static final int DEFAULT_WIDTH = 120;
     // The default depth of the grid.
     private static final int DEFAULT_DEPTH = 80;
+
     // The probability that a fox will be created in any given grid position.
     private static final double SHARK_CREATION_PROBABILITY = 0.10;
     // The probability that a whale will be created in any given grid position.
     private static final double WHALE_CREATION_PROBABILITY = 0.000;
     // The probability that a rabbit will be created in any given position.
     private static final double CLOWNFISH_CREATION_PROBABILITY = 0.08;
+    // The probability that a phytoplankton will be created in any given grid position.
+    private static final double PHYTOPLANKTON_CREATION_PROBABILITY = 0.07;
 
     private static final int DAY_LENGTH = 600;
     private static final int NIGHT_LENGTH = 600;
     private int time = 0;
 
-    private TimeOfDay timeOfDay = TimeOfDay.Day;
+    private final WorldState worldState;
     // The current state of the field.
     private Field field;
     // The current step of the simulation.
@@ -57,6 +60,10 @@ public class Simulator
         
         field = new Field(depth, width);
         view = new SimulatorView(depth, width);
+
+        // Initialise world state.
+        worldState = new WorldState();
+        worldState.setTimeOfDay(TimeOfDay.Day);
 
         reset();
     }
@@ -95,24 +102,24 @@ public class Simulator
         // the next step.
         Field nextFieldState = new Field(field.getDepth(), field.getWidth());
 
-        if (timeOfDay == TimeOfDay.Night) {
+        if (worldState.getTimeOfDay() == TimeOfDay.Night) {
             if (time >= NIGHT_LENGTH){
                 System.out.println("It turned day.");
-                timeOfDay = TimeOfDay.Day;
+                worldState.setTimeOfDay(TimeOfDay.Day);
                 time = 0;
             }
-        } else if (timeOfDay == TimeOfDay.Day) {
+        } else if (worldState.getTimeOfDay() == TimeOfDay.Day) {
             if (time >= DAY_LENGTH) {
                 System.out.println("It turned night.");
-                timeOfDay = TimeOfDay.Night;
+                worldState.setTimeOfDay(TimeOfDay.Night);
                 time = 0;
             }
         }
         time++;
 
-        List<LivingEntity> animals = field.getEntities();
-        for (LivingEntity anEntity : animals) {
-            anEntity.act(field, nextFieldState);
+        List<LivingEntity> entities = field.getEntities();
+        for (LivingEntity anEntity : entities) {
+            anEntity.act(field, nextFieldState, worldState);
         }
         
         // Replace the old state with the new one.
@@ -137,26 +144,14 @@ public class Simulator
      */
     private void populate()
     {
-        Random rand = Randomizer.getRandom();
+        EntitySpawner entitySpawner = new EntitySpawner();
         field.clear();
         for(int row = 0; row < field.getDepth(); row++) {
             for(int col = 0; col < field.getWidth(); col++) {
-                if(rand.nextDouble() <= WHALE_CREATION_PROBABILITY) {
-                    Location location = new Location(row, col);
-                    Whale whale = new Whale(true, location);
-                    field.placeAnimal(whale, location);
-                }
-                else if(rand.nextDouble() <= SHARK_CREATION_PROBABILITY) {
-                    Location location = new Location(row, col);
-                    Shark fox = new Shark(true, location);
-                    field.placeAnimal(fox, location);
-                }
-                else if(rand.nextDouble() <= CLOWNFISH_CREATION_PROBABILITY) {
-                    Location location = new Location(row, col);
-                    Clownfish rabbit = new Clownfish(true, location);
-                    field.placeAnimal(rabbit, location);
-                }
-                // else leave the location empty.
+                Location location = new Location(row, col);
+                LivingEntity entity = entitySpawner.spawn(location);
+                if (entity == null) continue;
+                field.placeEntity(entity, location);
             }
         }
     }
