@@ -22,7 +22,7 @@ public class Clownfish extends Animal
 
     /**
      * Create a new rabbit. A rabbit may be created with age
-     * zero (a new born) or with a random age.
+     * zero (a newborn) or with a random age.
      * 
      * @param randomAge If true, the rabbit will have a random age.
      * @param location The location within the field.
@@ -30,12 +30,13 @@ public class Clownfish extends Animal
     public Clownfish(Boolean randomAge, Location location)
     {
         super(randomAge, MAX_AGE, location);
+        foodSources.add(Phytoplankton.class);
         foodValue = 9;
         breedingAge = BREEDING_AGE;
         breedingProbability = BREEDING_PROBABILITY;
         maxLitterSize = MAX_LITTER_SIZE;
 
-        foodLevel = 10000;
+        foodLevel = rand.nextInt(25);
     }
     
     /**
@@ -48,21 +49,25 @@ public class Clownfish extends Animal
     {
         super.act(currentField, nextFieldState, worldState);
         if(isAlive()) {
-            List<Location> freeLocations = 
+            List<Location> freeLocations =
                 nextFieldState.getFreeAdjacentLocations(getLocation());
             if(!freeLocations.isEmpty()) {
                 giveBirth(nextFieldState, freeLocations);
             }
+
+            Location nextLocation = findFood(currentField);
             // Try to move into a free location.
-            if(! freeLocations.isEmpty()) {
-                Location nextLocation = freeLocations.get(0);
-                setLocation(nextLocation);
-                nextFieldState.placeEntity(this, nextLocation);
-            }
-            else {
-                // Overcrowding.
-                setDead();
-            }
+            if (nextLocation == null) {
+                if (!freeLocations.isEmpty()) {
+                    nextLocation = freeLocations.removeFirst();
+                    setLocation(nextLocation);
+                    nextFieldState.placeEntity(this, nextLocation);
+                } else {
+                    // Overcrowding.
+                    setDead();
+                }
+            } else setLocation(nextLocation);
+
         }
     }
 

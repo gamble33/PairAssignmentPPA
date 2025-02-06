@@ -1,4 +1,6 @@
 public class WorldState {
+    public static final int DAY_LENGTH = 200;
+    public static final int NIGHT_LENGTH = 100;
     private WeatherState weatherState;
     private TimeOfDay timeOfDay;
 

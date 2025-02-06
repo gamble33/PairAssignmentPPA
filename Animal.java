@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Common elements of foxes and rabbits.
+ * Common elements of all animals.
  *
  * @author David J. Barnes and Michael Kölling
  * @version 7.0
@@ -76,7 +76,7 @@ public abstract class Animal extends LivingEntity
         Class<?> runtimeClass = this.getClass();
         if(births > 0) {
             for (int b = 0; b < births && !freeLocations.isEmpty(); b++) {
-                Location loc = freeLocations.remove(0);
+                Location loc = freeLocations.removeFirst();
 
                 try {
                     Animal baby = (Animal) runtimeClass.getConstructor(Boolean.class, Location.class).newInstance(false, loc);
@@ -85,8 +85,6 @@ public abstract class Animal extends LivingEntity
                          InvocationTargetException e) {
                         // This shouldn't happen.
                         System.err.println("Error giving birth with finding the right constructor.");
-                        e.getMessage();
-                        e.printStackTrace();
                         System.exit(1);
                 }
             }

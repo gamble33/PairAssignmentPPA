@@ -19,9 +19,9 @@ public class EntitySpawner {
 
 
     public EntitySpawner() {
-        entityWeights.add(new EntityWeight(1, (loc) -> new Phytoplankton(true, loc)));
+        entityWeights.add(new EntityWeight(2, (loc) -> new Phytoplankton(true, loc)));
         entityWeights.add(new EntityWeight(0, (loc) -> new Shark(true, loc)));
-        entityWeights.add(new EntityWeight(0, (loc) -> new Clownfish(true, loc)));
+        entityWeights.add(new EntityWeight(1, (loc) -> new Clownfish(true, loc)));
 
         // Case for nothing being created, leaving the cell unoccupied.
         entityWeights.add(new EntityWeight(50, (_) -> null));

@@ -14,18 +14,6 @@ public class Simulator
     private static final int DEFAULT_WIDTH = 120;
     // The default depth of the grid.
     private static final int DEFAULT_DEPTH = 80;
-
-    // The probability that a fox will be created in any given grid position.
-    private static final double SHARK_CREATION_PROBABILITY = 0.10;
-    // The probability that a whale will be created in any given grid position.
-    private static final double WHALE_CREATION_PROBABILITY = 0.000;
-    // The probability that a rabbit will be created in any given position.
-    private static final double CLOWNFISH_CREATION_PROBABILITY = 0.08;
-    // The probability that a phytoplankton will be created in any given grid position.
-    private static final double PHYTOPLANKTON_CREATION_PROBABILITY = 0.07;
-
-    private static final int DAY_LENGTH = 600;
-    private static final int NIGHT_LENGTH = 600;
     private int time = 0;
 
     private final WorldState worldState;
@@ -85,7 +73,8 @@ public class Simulator
     public void simulate(int numSteps)
     {
         reportStats();
-        for(int n = 1; n <= numSteps && field.isViable(); n++) {
+//        for(int n = 1; n <= numSteps && field.isViable(); n++) {
+        for(int n = 1; n <= numSteps; n++) {
             simulateOneStep();
             delay(50);         // adjust this to change execution speed
         }
@@ -103,13 +92,13 @@ public class Simulator
         Field nextFieldState = new Field(field.getDepth(), field.getWidth());
 
         if (worldState.getTimeOfDay() == TimeOfDay.Night) {
-            if (time >= NIGHT_LENGTH){
+            if (time >= WorldState.NIGHT_LENGTH){
                 System.out.println("It turned day.");
                 worldState.setTimeOfDay(TimeOfDay.Day);
                 time = 0;
             }
         } else if (worldState.getTimeOfDay() == TimeOfDay.Day) {
-            if (time >= DAY_LENGTH) {
+            if (time >= WorldState.DAY_LENGTH) {
                 System.out.println("It turned night.");
                 worldState.setTimeOfDay(TimeOfDay.Night);
                 time = 0;

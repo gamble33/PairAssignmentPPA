@@ -10,6 +10,8 @@ import java.util.List;
 public abstract class Plant extends LivingEntity {
     /// The food level required for a plant to grow.
     protected int minFoodForGrowth = 6;
+    /// The chance that a plant will successfully grow on a given iteration.
+    protected double probabilityForGrowth = 0.05;
 
     public Plant(Boolean randomAge, int maxAge, Location location) {
         super(randomAge, maxAge, location);
@@ -20,9 +22,12 @@ public abstract class Plant extends LivingEntity {
         super.act(currentField, nextFieldState, worldState);
         photosynthesize(worldState);
 
+        // Plants don't move.
+        if (isAlive()) nextFieldState.placeEntity(this, getLocation());
+
         List<Location> freeLocations = nextFieldState.getFreeAdjacentLocations(getLocation());
         if (!freeLocations.isEmpty()) {
-            // if (foodLevel >= minFoodForGrowth) grow(nextFieldState, freeLocations);
+             if (foodLevel >= minFoodForGrowth) grow(nextFieldState, freeLocations);
         }
 
     }
@@ -35,10 +40,11 @@ public abstract class Plant extends LivingEntity {
     }
 
     private void grow(Field nextFieldState, List<Location> freeLocations) {
+        if (rand.nextDouble() > probabilityForGrowth) return;
         int births = 1;
 
-        // Giving birth takes 75% of the food of the plant.
-        // foodLevel -= (int) (minFoodForGrowth * 0.75);
+        // Giving birth takes 50% of the food of the plant.
+         foodLevel -= (int) (minFoodForGrowth * 0.50);
 
         Class<?> runtimeClass = this.getClass();
         for (int b = 0; b < births && !freeLocations.isEmpty(); b++) {
@@ -47,7 +53,6 @@ public abstract class Plant extends LivingEntity {
             try {
                 Plant seedling = (Plant) runtimeClass.getConstructor(Boolean.class, Location.class).newInstance(false, loc);
                 nextFieldState.placeEntity(seedling, loc);
-                System.out.println("Plant grown!");
             } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
                      InvocationTargetException e) {
                 // This shouldn't happen.
