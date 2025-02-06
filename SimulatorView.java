@@ -45,7 +45,7 @@ public class SimulatorView extends JFrame
         setColor(Shark.class, Color.gray);
         setColor(Whale.class, Color.blue);
 
-        setTitle("Fox and Rabbit Simulation");
+        setTitle("Shark & Fish, etc. Simulation");
         stepLabel = new JLabel(STEP_PREFIX, JLabel.CENTER);
         population = new JLabel(POPULATION_PREFIX, JLabel.CENTER);
         
