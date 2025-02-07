@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Function;
 
 /**
  * Common elements of all animals.
@@ -19,6 +20,7 @@ public abstract class Animal extends LivingEntity
     protected double breedingProbability;
     protected int maxLitterSize;
     protected List<Class<?>> foodSources;
+    private Function<Animal, null> infectedUpdate;
 
     /**
      * Constructor for objects of class Animal.
