@@ -78,6 +78,20 @@ public class Field
         return free;
     }
 
+    public List<Location> getLocationsWithinRadius(Location location, double radius) {
+        List<Location> locations = new ArrayList<>();
+        for(int row = location.row() - (int)radius; row <= location.row() + radius; row++) {
+            for(int col = location.col() - (int)radius; col <= location.col() + radius; col++) {
+                if(
+                        row >= 0 && row < depth && col >= 0 && col < width // Check within bounds of field.
+                        && Math.hypot(row - location.row(), col - location.col()) <= radius // Check distance < radius.
+                ) {
+                        locations.add(new Location(row, col));
+                }
+            }
+        }
+        return locations;}
+
     /**
      * Return a shuffled list of locations adjacent to the given one.
      * The list will not include the location itself.

@@ -36,7 +36,7 @@ public class Clownfish extends Animal
         breedingProbability = BREEDING_PROBABILITY;
         maxLitterSize = MAX_LITTER_SIZE;
 
-        foodLevel = rand.nextInt(25);
+        foodLevel = rand.nextInt(10);
     }
     
     /**

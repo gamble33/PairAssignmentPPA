@@ -19,15 +19,22 @@ public abstract class GenderedAnimal extends Animal {
         // Only females give birth.
         if (isMale) return;
 
-        List<Location> locations = nextFieldState.getAdjacentLocations(getLocation());
+        // Don't attempt to mate if there is no space to give birth to children.
+        List<Location> freeLocations = nextFieldState.getFreeAdjacentLocations(getLocation());
+        if (freeLocations.isEmpty()) return;
+
+        List<Location> locations = currentField.getLocationsWithinRadius(getLocation(), 5);
+        // System.out.println("Locations: " + locations.size());
         Class<?> runtimeClass = this.getClass();
         for (Location location : locations) {
             if (runtimeClass.isInstance(nextFieldState.getLivingEntity(location))) {
                 GenderedAnimal genderedAnimal = (GenderedAnimal) nextFieldState.getLivingEntity(location);
                 // If animals are opposite gender, reproduction occurs.
                 if (genderedAnimal.isMale != this.isMale) {
-                    // Give birth.
-                    giveBirth(nextFieldState, locations);
+                    // Give birth if there is space.
+                        giveBirth(nextFieldState, freeLocations);
+                        System.out.println("Birthed: " + totalMated);
+                        totalMated++;
                     break;
                 }
             }

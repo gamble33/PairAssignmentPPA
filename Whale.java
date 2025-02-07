@@ -19,9 +19,6 @@ public class Whale extends GenderedAnimal
     private static final double BREEDING_PROBABILITY = 0.08;
     // The maximum number of births.
     private static final int MAX_LITTER_SIZE = 2;
-    // The food value of a single rabbit. In effect, this is the
-    // number of steps a fox can go before it has to eat again.
-    private static final int RABBIT_FOOD_VALUE = 9;
     // A shared random number generator to control breeding.
     private static final Random rand = Randomizer.getRandom();
 
@@ -39,10 +36,11 @@ public class Whale extends GenderedAnimal
         super(randomAge, MAX_AGE, location);
 
         foodSources.add(Clownfish.class);
+        foodSources.add(Turtle.class);
         breedingAge = BREEDING_AGE;
         breedingProbability = BREEDING_PROBABILITY;
         maxLitterSize = MAX_LITTER_SIZE;
-        foodLevel = rand.nextInt(RABBIT_FOOD_VALUE);
+        foodLevel = rand.nextInt(10);
     }
     
     /**

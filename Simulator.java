@@ -14,7 +14,6 @@ public class Simulator
     private static final int DEFAULT_WIDTH = 120;
     // The default depth of the grid.
     private static final int DEFAULT_DEPTH = 80;
-    private int time = 0;
 
     private final WorldState worldState;
     // The current state of the field.
@@ -92,19 +91,19 @@ public class Simulator
         Field nextFieldState = new Field(field.getDepth(), field.getWidth());
 
         if (worldState.getTimeOfDay() == TimeOfDay.Night) {
-            if (time >= WorldState.NIGHT_LENGTH){
+            if (worldState.getTime() >= WorldState.NIGHT_LENGTH){
                 System.out.println("It turned day.");
                 worldState.setTimeOfDay(TimeOfDay.Day);
-                time = 0;
+                worldState.setTime(0);
             }
         } else if (worldState.getTimeOfDay() == TimeOfDay.Day) {
-            if (time >= WorldState.DAY_LENGTH) {
+            if (worldState.getTime() >= WorldState.DAY_LENGTH) {
                 System.out.println("It turned night.");
                 worldState.setTimeOfDay(TimeOfDay.Night);
-                time = 0;
+                worldState.setTime(0);
             }
         }
-        time++;
+        worldState.incrementTime();
 
         List<LivingEntity> entities = field.getEntities();
         for (LivingEntity anEntity : entities) {
@@ -115,7 +114,7 @@ public class Simulator
         field = nextFieldState;
 
         // reportStats();
-        view.showStatus(step, field);
+        view.showStatus(step, field, worldState);
     }
         
     /**
@@ -125,7 +124,7 @@ public class Simulator
     {
         step = 0;
         populate();
-        view.showStatus(step, field);
+        view.showStatus(step, field, worldState);
     }
     
     /**

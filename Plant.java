@@ -11,7 +11,7 @@ public abstract class Plant extends LivingEntity {
     /// The food level required for a plant to grow.
     protected int minFoodForGrowth = 6;
     /// The chance that a plant will successfully grow on a given iteration.
-    protected double probabilityForGrowth = 0.05;
+    protected double probabilityForGrowth = 0.10;
 
     public Plant(Boolean randomAge, int maxAge, Location location) {
         super(randomAge, maxAge, location);
