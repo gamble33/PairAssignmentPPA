@@ -19,16 +19,24 @@ public class EntitySpawner {
 
 
     public EntitySpawner() {
-        entityWeights.add(new EntityWeight(1, (loc) -> new Phytoplankton(true, loc)));
-        entityWeights.add(new EntityWeight(0.5f, (loc) -> new Seaweed(true, loc)));
-        entityWeights.add(new EntityWeight(0, (loc) -> new Shark(true, loc)));
-        entityWeights.add(new EntityWeight(0, (loc) -> new Whale(true, loc)));
-        entityWeights.add(new EntityWeight(0, (loc) -> new PinkDolphin(true, loc)));
-        entityWeights.add(new EntityWeight(1, (loc) -> new Clownfish(true, loc)));
-        entityWeights.add(new EntityWeight(0, (loc) -> new Turtle(true, loc)));
+        // Plants
+        addSpawnRule(1, (loc) -> new Phytoplankton(true, loc));
+        addSpawnRule(0.5f, (loc) -> new Seaweed(true, loc));
+
+        // Predators
+        addSpawnRule(0, (loc) -> new Shark(true, loc));
+        addSpawnRule(0, (loc) -> new Whale(true, loc));
+        addSpawnRule(0, (loc) -> new PinkDolphin(true, loc));
+
+        // Prey
+        addSpawnRule(1, (loc) -> new Clownfish(true, loc));
+        addSpawnRule(0, (loc) -> new Turtle(true, loc));
+
+        // Diseases
+        addSpawnRule(0.01f, (loc) -> new DiseaseEntity(loc, new Chlamydia(null)));
 
         // Case for nothing being created, leaving the cell unoccupied.
-        entityWeights.add(new EntityWeight(50, (_) -> null));
+        addSpawnRule(50, (_) -> null);
     }
 
     public LivingEntity spawn(Location location) {
@@ -42,5 +50,9 @@ public class EntitySpawner {
                 return ew.creator.apply(location);
         }
         return null;
+    }
+
+    private void addSpawnRule(float relativeFrequency, Function<Location, LivingEntity> creator) {
+        entityWeights.add(new EntityWeight(relativeFrequency, creator));
     }
 }

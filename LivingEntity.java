@@ -35,6 +35,22 @@ public abstract class LivingEntity {
         incrementHunger();
     }
 
+    public void increaseFoodLevel(int amount) {
+        foodLevel += amount;
+        if (foodLevel < 0) {
+            foodLevel = 0;
+            setDead();
+        }
+    }
+
+    public void decreaseFoodLevel(int amount) {
+        foodLevel -= amount;
+        if (foodLevel < 0) {
+            foodLevel = 0;
+            setDead();
+        }
+    }
+
     public int getFoodValue() {
         return foodValue;
     }

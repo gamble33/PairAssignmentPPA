@@ -1,8 +1,5 @@
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.function.Function;
 
 /**
@@ -20,7 +17,7 @@ public abstract class Animal extends LivingEntity
     protected double breedingProbability;
     protected int maxLitterSize;
     protected List<Class<?>> foodSources;
-    private Function<Animal, null> infectedUpdate;
+    private final HashMap<Class<?>, Disease> infections = new HashMap<>();
 
     /**
      * Constructor for objects of class Animal.
@@ -35,6 +32,26 @@ public abstract class Animal extends LivingEntity
     @Override
     public void act(Field currentField, Field nextFieldState, WorldState worldState) {
         super.act(currentField, nextFieldState, worldState);
+    }
+
+    /**
+     * Infects the animal with the given disease. The disease's effects
+     * will be applied to the host during each simulation step until it is cured.
+     * If the animal is already infected by the type of disease, then the animal is not reinfected and continues
+     * as is.
+     * @param disease The disease that will infect this animal.
+     */
+    public void infect(Disease disease) {
+        infections.putIfAbsent(disease.getClass(), disease);
+    }
+
+    /**
+     * Removes the infection from the animal. Stops all symptoms from this disease.
+     *
+     * @param disease A disease which the animal is currently infected by.
+     */
+    public void cure(Disease disease) {
+        infections.remove(disease.getClass());
     }
 
     /**
@@ -116,6 +133,11 @@ public abstract class Animal extends LivingEntity
             births = 0;
         }
         return births;
+    }
+
+    private boolean checkAlreadyInfected(Disease disease) {
+        // todo.
+        return true;
     }
 
 }
