@@ -8,9 +8,10 @@ public class Phytoplankton extends Plant {
      */
     public Phytoplankton(Boolean randomAge, Location location) {
         super(randomAge, MAX_AGE, location);
-        foodValue = 40000;
-        foodLevel = rand.nextInt(9);
+        foodValue = 30;
+        foodLevel = rand.nextInt(36);
         minFoodForGrowth = 100;
+        photoSynthesisEffectiveness = 10;
     }
 
     @Override

@@ -10,7 +10,7 @@ public class Seaweed extends Plant {
         super(randomAge, MAX_AGE, location);
         foodValue = 38;
         foodLevel = rand.nextInt(9);
-        minFoodForGrowth = 100;
+        minFoodForGrowth = 200;
     }
 
     @Override

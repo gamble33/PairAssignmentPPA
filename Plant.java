@@ -12,6 +12,8 @@ public abstract class Plant extends LivingEntity {
     protected int minFoodForGrowth = 6;
     /// The chance that a plant will successfully grow on a given iteration.
     protected double probabilityForGrowth = 0.10;
+    /// The amount of food points gained per step of simulation due to photosynthesis.
+    protected int photoSynthesisEffectiveness = 3;
 
     public Plant(Boolean randomAge, int maxAge, Location location) {
         super(randomAge, maxAge, location);
@@ -35,7 +37,7 @@ public abstract class Plant extends LivingEntity {
     private void photosynthesize(WorldState worldState) {
         // If there is sun, the plant will gain food via photosynthesis
         if (worldState.getTimeOfDay() == TimeOfDay.Day) {
-            foodLevel += 3;
+            foodLevel += photoSynthesisEffectiveness;
         }
     }
 

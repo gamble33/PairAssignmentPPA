@@ -1,6 +1,9 @@
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Common elements of all animals.
@@ -82,43 +85,14 @@ public abstract class Animal extends LivingEntity {
         return foodLocation;
     }
 
-    protected void findMate(Field field, float radius) {
-
-    }
-
     protected void findFoodWithinRadius(Field field, float radius) {
-        Location foodLocation = findClosestFoodSource(field, radius);
-        Location nextLocationTowardsFood;
-
-        // If there is no food nearby, then the animal will move randomly.
-        if (foodLocation == null) nextLocationTowardsFood = getRandomAdjacentLocation(field);
-        else {
-            nextLocationTowardsFood = getLocation().getLocationToGoal(foodLocation);
-
-            // If field is not empty, then it will search for sub-optimal locations which advance
-            // the animal towards food.
-            if (field.getLivingEntity(nextLocationTowardsFood) == null) {
-
-                // Check all nearby locations
-                List<Location> adjacent = field.getFreeAdjacentLocations(getLocation());
-                for (Location location : adjacent) {
-                    if (getLocation().isNextLocationHelpful(location, foodLocation)) {
-                        nextLocationTowardsFood = location;
-                        break;
-                    }
-                }
-            }
-        }
-
-        // If no advancing location was found, the best option is to stay in the current location.
-        if (nextLocationTowardsFood == null) nextLocationTowardsFood = getLocation();
-
-        // Check if this location is the food location.
-        if (doesLocationContainFood(field, nextLocationTowardsFood)) {
-            eatFood(field, nextLocationTowardsFood);
-        } else {
-            advanceTo(field, nextLocationTowardsFood);
-        }
+        findWithinRadius(
+                field,
+               radius,
+                () -> findClosestFoodSource(field, radius),
+                (location) -> doesLocationContainFood(field, location),
+                (location) -> eatFood(field, location)
+        );
     }
 
     /**
@@ -153,6 +127,50 @@ public abstract class Animal extends LivingEntity {
         List<Location> adjacent = field.getFreeAdjacentLocations(getLocation());
         if (adjacent.isEmpty()) return null;
         return adjacent.getFirst();
+    }
+
+    protected void moveRandomly(Field field) {
+        List<Location> adjacent = field.getFreeAdjacentLocations(getLocation());
+        Location nextLocation;
+        if (adjacent.isEmpty()) nextLocation = getLocation();
+        else nextLocation = adjacent.removeFirst();
+        advanceTo(field, nextLocation);
+    }
+
+    private void findWithinRadius(Field field, float radius, Supplier<Location> closestLocationSupplier, Function<Location, Boolean> checkContains, Consumer<Location> onFound) {
+        Location goal = closestLocationSupplier.get();
+        Location nextLocationTowardsGoal;
+
+        // If there is no food nearby, then the animal will move randomly.
+        if (goal == null) nextLocationTowardsGoal = getRandomAdjacentLocation(field);
+        else {
+            nextLocationTowardsGoal = getLocation().getLocationToGoal(goal);
+
+            // If field is not empty, then it will search for suboptimal locations which advance
+            // the animal towards food.
+            if (field.getLivingEntity(nextLocationTowardsGoal) == null) {
+
+                // Check all nearby locations
+                List<Location> adjacent = field.getFreeAdjacentLocations(getLocation());
+                for (Location location : adjacent) {
+                    if (getLocation().isNextLocationHelpful(location, goal)) {
+                        nextLocationTowardsGoal = location;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // If no advancing location was found, the best option is to stay in the current location.
+        if (nextLocationTowardsGoal == null) nextLocationTowardsGoal = getLocation();
+
+        // Check if this location contains the desired entity.
+        if (checkContains.apply(nextLocationTowardsGoal)) {
+            // Execute the code relating to finding the goal.
+            onFound.accept(nextLocationTowardsGoal);
+        } else {
+            advanceTo(field, nextLocationTowardsGoal);
+        }
     }
 
     private void eatFood(Field field, Location location) {
@@ -190,6 +208,21 @@ public abstract class Animal extends LivingEntity {
     }
 
     /**
+     * Finds the closest mate within a specified radius in the given field.
+     *
+     * @param field  The field in which to search for food sources.
+     * @param radius The radius within which to locate the closest food source.
+     * @return The location of the closest mate, or null if no mate is found.
+     */
+    private Location findClosestMate(Field field, float radius) {
+        return findClosest(
+                field,
+                radius,
+                (location) -> doesLocationContainMate(field, location)
+        );
+    }
+
+    /**
      * Finds the closest location within a specified radius from the current location
      * that satisfies a given condition.
      *
@@ -218,6 +251,12 @@ public abstract class Animal extends LivingEntity {
         if (livingEntity == null) return false;
 
         return livingEntity.isAlive() && foodSources.contains(livingEntity.getClass());
+    }
+
+    private boolean doesLocationContainMate(Field field, Location location) {
+        LivingEntity livingEntity = field.getLivingEntity(location);
+        if (livingEntity == null) return false;
+        return livingEntity.isAlive() && this.getClass().equals(livingEntity.getClass());
     }
 
     /**
