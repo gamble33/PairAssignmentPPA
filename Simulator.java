@@ -11,9 +11,9 @@ public class Simulator
 {
     // Constants representing configuration information for the simulation.
     // The default width for the grid.
-    private static final int DEFAULT_WIDTH = 120;
+    private static final int DEFAULT_WIDTH = 240;
     // The default depth of the grid.
-    private static final int DEFAULT_DEPTH = 80;
+    private static final int DEFAULT_DEPTH = 160;
 
     private final WorldState worldState;
     // The current state of the field.
@@ -89,22 +89,9 @@ public class Simulator
         // Use a separate Field to store the starting state of
         // the next step.
         Field nextFieldState = new Field(field.getDepth(), field.getWidth());
+        adjustTimeOfDay();
 
-        if (worldState.getTimeOfDay() == TimeOfDay.Night) {
-            if (worldState.getTime() >= WorldState.NIGHT_LENGTH){
-                System.out.println("It turned day.");
-                worldState.setTimeOfDay(TimeOfDay.Day);
-                worldState.setTime(0);
-            }
-        } else if (worldState.getTimeOfDay() == TimeOfDay.Day) {
-            if (worldState.getTime() >= WorldState.DAY_LENGTH) {
-                System.out.println("It turned night.");
-                worldState.setTimeOfDay(TimeOfDay.Night);
-                worldState.setTime(0);
-            }
-        }
-        worldState.incrementTime();
-
+        // Call every entity's act method.
         List<LivingEntity> entities = field.getEntities();
         for (LivingEntity anEntity : entities) {
             anEntity.act(field, nextFieldState, worldState);
@@ -125,6 +112,23 @@ public class Simulator
         step = 0;
         populate();
         view.showStatus(step, field, worldState);
+    }
+
+    private void adjustTimeOfDay() {
+        if (worldState.getTimeOfDay() == TimeOfDay.Night) {
+            if (worldState.getTime() >= WorldState.NIGHT_LENGTH){
+                System.out.println("It turned day.");
+                worldState.setTimeOfDay(TimeOfDay.Day);
+                worldState.setTime(0);
+            }
+        } else if (worldState.getTimeOfDay() == TimeOfDay.Day) {
+            if (worldState.getTime() >= WorldState.DAY_LENGTH) {
+                System.out.println("It turned night.");
+                worldState.setTimeOfDay(TimeOfDay.Night);
+                worldState.setTime(0);
+            }
+        }
+        worldState.incrementTime();
     }
     
     /**

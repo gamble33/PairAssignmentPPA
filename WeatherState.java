@@ -1,3 +1,3 @@
 public enum WeatherState {
-    Sunny, Thunderstorm
+    Sunny, Thunderstorm, Heatwave
 }

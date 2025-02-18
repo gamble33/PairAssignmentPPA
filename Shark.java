@@ -16,6 +16,8 @@ public class Shark extends GenderedAnimal
     private static final int MAX_AGE = 1500;
     // The likelihood of a shark breeding.
     private static final double BREEDING_PROBABILITY = 0.08;
+    // The likelihood of a shark doing nothing during the day.
+    private static final double IDLE_PROBABILITY = 0.1d;
     // The maximum number of births.
     private static final int MAX_LITTER_SIZE = 2;
 
@@ -51,11 +53,22 @@ public class Shark extends GenderedAnimal
     {
         super.act(currentField, nextFieldState, worldState);
         if(isAlive()) {
+
+            // If it is day, there is a good chance the shark will sleep and do nothing for a
+            // given iteration.
+            if (
+                    worldState.getTimeOfDay() == TimeOfDay.Day
+                    && rand.nextDouble() < IDLE_PROBABILITY
+            ) return;
+
             List<Location> freeLocations =
                     nextFieldState.getFreeAdjacentLocations(getLocation());
+
+            // Check For Mate
             if(!freeLocations.isEmpty()) {
                 checkForMate(currentField, nextFieldState);
             }
+
             // Move towards a source of food if found.
             Location nextLocation = findFood(currentField);
             if(nextLocation == null && ! freeLocations.isEmpty()) {
@@ -73,8 +86,6 @@ public class Shark extends GenderedAnimal
             }
         }
     }
-
-
 
     @Override
     public String toString() {

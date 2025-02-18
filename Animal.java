@@ -8,8 +8,7 @@ import java.util.function.Function;
  * @author David J. Barnes and Michael Kölling
  * @version 7.0
  */
-public abstract class Animal extends LivingEntity
-{
+public abstract class Animal extends LivingEntity {
     // A shared random number generator to control breeding.
     protected static final Random rand = Randomizer.getRandom();
 
@@ -21,10 +20,10 @@ public abstract class Animal extends LivingEntity
 
     /**
      * Constructor for objects of class Animal.
+     *
      * @param location The animal's location.
      */
-    public Animal(Boolean randomAge, int maxAge, Location location)
-    {
+    public Animal(Boolean randomAge, int maxAge, Location location) {
         super(randomAge, maxAge, location);
         this.foodSources = new ArrayList<>();
     }
@@ -39,6 +38,7 @@ public abstract class Animal extends LivingEntity
      * will be applied to the host during each simulation step until it is cured.
      * If the animal is already infected by the type of disease, then the animal is not reinfected and continues
      * as is.
+     *
      * @param disease The disease that will infect this animal.
      */
     public void infect(Disease disease) {
@@ -57,20 +57,20 @@ public abstract class Animal extends LivingEntity
     /**
      * Look for food sources adjacent to the current location.
      * Only the first live food source is eaten.
+     *
      * @param field The field currently occupied.
      * @return Where food was found, or null if it wasn't.
      */
-    protected Location findFood(Field field)
-    {
+    protected Location findFood(Field field) {
         List<Location> adjacent = field.getAdjacentLocations(getLocation());
         Iterator<Location> it = adjacent.iterator();
         Location foodLocation = null;
-        while(foodLocation == null && it.hasNext()) {
+        while (foodLocation == null && it.hasNext()) {
             Location loc = it.next();
             LivingEntity livingEntity = field.getLivingEntity(loc);
             for (Class<?> type : foodSources) {
-                if(type.isInstance(livingEntity)) {
-                    if(livingEntity.isAlive()) {
+                if (type.isInstance(livingEntity)) {
+                    if (livingEntity.isAlive()) {
                         livingEntity.setDead();
                         foodLevel = livingEntity.getFoodValue();
                         foodLocation = loc;
@@ -82,18 +82,57 @@ public abstract class Animal extends LivingEntity
         return foodLocation;
     }
 
+    protected void findMate(Field field, float radius) {
+
+    }
+
+    protected void findFoodWithinRadius(Field field, float radius) {
+        Location foodLocation = findClosestFoodSource(field, radius);
+        Location nextLocationTowardsFood;
+
+        // If there is no food nearby, then the animal will move randomly.
+        if (foodLocation == null) nextLocationTowardsFood = getRandomAdjacentLocation(field);
+        else {
+            nextLocationTowardsFood = getLocation().getLocationToGoal(foodLocation);
+
+            // If field is not empty, then it will search for sub-optimal locations which advance
+            // the animal towards food.
+            if (field.getLivingEntity(nextLocationTowardsFood) == null) {
+
+                // Check all nearby locations
+                List<Location> adjacent = field.getFreeAdjacentLocations(getLocation());
+                for (Location location : adjacent) {
+                    if (getLocation().isNextLocationHelpful(location, foodLocation)) {
+                        nextLocationTowardsFood = location;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // If no advancing location was found, the best option is to stay in the current location.
+        if (nextLocationTowardsFood == null) nextLocationTowardsFood = getLocation();
+
+        // Check if this location is the food location.
+        if (doesLocationContainFood(field, nextLocationTowardsFood)) {
+            eatFood(field, nextLocationTowardsFood);
+        } else {
+            advanceTo(field, nextLocationTowardsFood);
+        }
+    }
+
     /**
      * Check whether this fox is to give birth at this step.
      * New births will be made into free adjacent locations.
+     *
      * @param freeLocations The locations that are free in the current field.
      */
-    protected void giveBirth(Field nextFieldState, List<Location> freeLocations)
-    {
+    protected void giveBirth(Field nextFieldState, List<Location> freeLocations) {
         // New foxes are born into adjacent locations.
         // Get a list of adjacent free locations.
         int births = generateNumberOfBirths();
         Class<?> runtimeClass = this.getClass();
-        if(births > 0) {
+        if (births > 0) {
             for (int b = 0; b < births && !freeLocations.isEmpty(); b++) {
                 Location loc = freeLocations.removeFirst();
 
@@ -102,34 +141,103 @@ public abstract class Animal extends LivingEntity
                     nextFieldState.placeEntity(baby, loc);
                 } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
                          InvocationTargetException e) {
-                        // This shouldn't happen.
-                        System.err.println("Error giving birth with finding the right constructor.");
-                        System.exit(1);
+                    // This shouldn't happen.
+                    System.err.println("Error giving birth with finding the right constructor.");
+                    System.exit(1);
                 }
             }
         }
     }
 
+    protected Location getRandomAdjacentLocation(Field field) {
+        List<Location> adjacent = field.getFreeAdjacentLocations(getLocation());
+        if (adjacent.isEmpty()) return null;
+        return adjacent.getFirst();
+    }
+
+    private void eatFood(Field field, Location location) {
+        LivingEntity food = field.getLivingEntity(location);
+        foodLevel = food.getFoodValue();
+        food.setDead();
+        advanceTo(field, location);
+    }
+
+    /**
+     * Moves the current entity to the specified location. Only use this if you are sure
+     * the location is empty.
+     *
+     * @param field    The next field state which will contain this entity at the specified location.
+     * @param location The *EMPTY* location which the entity will move to in the next simulation state.
+     */
+    private void advanceTo(Field field, Location location) {
+        setLocation(location);
+        field.placeEntity(this, location);
+    }
+
+    /**
+     * Finds the closest food source within a specified radius in the given field.
+     *
+     * @param field  The field in which to search for food sources.
+     * @param radius The radius within which to locate the closest food source.
+     * @return The location of the closest food source, or null if no food source is found.
+     */
+    private Location findClosestFoodSource(Field field, float radius) {
+        return findClosest(
+                field,
+                radius,
+                (location) -> doesLocationContainFood(field, location)
+        );
+    }
+
+    /**
+     * Finds the closest location within a specified radius from the current location
+     * that satisfies a given condition.
+     *
+     * @param field               The field in which to search for locations.
+     * @param radius              The radius within which to locate the closest location.
+     * @param conditionPredicate  A function that determines whether a location satisfies the condition.
+     * @return The closest location that satisfies the condition, or null if no such location is found.
+     */
+    private Location findClosest(Field field, float radius, Function<Location, Boolean> conditionPredicate) {
+        List<Location> nearBy = field.getLocationsWithinRadius(getLocation(), radius);
+        double minDistance = Float.MAX_VALUE;
+        Location closest = null;
+        for (Location location : nearBy) {
+            if (!conditionPredicate.apply(location)) continue;
+            double distance = getLocation().getDirection(location).magnitude();
+            if (distance < minDistance) {
+                minDistance = distance;
+                closest = location;
+            }
+        }
+        return closest;
+    }
+
+    private boolean doesLocationContainFood(Field field, Location location) {
+        LivingEntity livingEntity = field.getLivingEntity(location);
+        if (livingEntity == null) return false;
+
+        return livingEntity.isAlive() && foodSources.contains(livingEntity.getClass());
+    }
+
     /**
      * A fox can breed if it has reached the breeding age.
      */
-    private boolean canBreed()
-    {
+    private boolean canBreed() {
         return age >= breedingAge;
     }
 
     /**
      * Generate a number representing the number of births,
      * if it can breed.
+     *
      * @return The number of births (may be zero).
      */
-    private int generateNumberOfBirths()
-    {
+    private int generateNumberOfBirths() {
         int births;
-        if(canBreed() && rand.nextDouble() <= breedingProbability) {
+        if (canBreed() && rand.nextDouble() <= breedingProbability) {
             births = rand.nextInt(maxLitterSize) + 1;
-        }
-        else {
+        } else {
             births = 0;
         }
         return births;
