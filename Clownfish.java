@@ -1,5 +1,4 @@
 import java.util.List;
-import java.util.Random;
 
 /**
  * A simple model of a rabbit.
@@ -29,7 +28,7 @@ public class Clownfish extends Animal {
     public Clownfish(Boolean randomAge, Location location) {
         super(randomAge, MAX_AGE, location);
         foodSources.add(Phytoplankton.class);
-        foodValue = 9;
+        foodValue = 30;
         breedingAge = BREEDING_AGE;
         breedingProbability = BREEDING_PROBABILITY;
         maxLitterSize = MAX_LITTER_SIZE;
@@ -56,9 +55,10 @@ public class Clownfish extends Animal {
                 setDead();
                 return;
             }
-            if (foodLevel > 10) moveRandomly(nextFieldState);
-            else findFoodWithinRadius(nextFieldState, 4);
-
+            if (foodLevel < 15) {
+                if (checkForFoodAdjacent(nextFieldState)) return;
+            }
+            moveRandomly(nextFieldState);
         }
     }
 

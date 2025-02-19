@@ -1,3 +1,9 @@
 public enum WeatherState {
-    Sunny, Thunderstorm, Heatwave
+    Sunny, Thunderstorm, Heatwave;
+
+
+    @Override
+    public String toString() {
+        return name();
+    }
 }

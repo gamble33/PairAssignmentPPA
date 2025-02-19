@@ -22,8 +22,12 @@ public class SimulatorView extends JFrame {
 
     private final String STEP_PREFIX = "Step: ";
     private final String POPULATION_PREFIX = "Population: ";
+    private final String TIME_PREFIX = "Time: ";
+    private final String WEATHER_PREFIX = "Weather: ";
     private final JLabel stepLabel;
     private final JLabel population;
+    private final JLabel timeLabel;
+    private final JLabel weatherLabel;
     private final FieldView fieldView;
 
     // A map for storing colors for participants in the simulation
@@ -51,14 +55,24 @@ public class SimulatorView extends JFrame {
         setTitle("Shark & Fish, etc. Simulation");
         stepLabel = new JLabel(STEP_PREFIX, JLabel.CENTER);
         population = new JLabel(POPULATION_PREFIX, JLabel.CENTER);
+        timeLabel = new JLabel(TIME_PREFIX, JLabel.CENTER);
+        weatherLabel = new JLabel(WEATHER_PREFIX, JLabel.CENTER);
         stepLabel.setBackground(Color.red);
+
+        // North row of text.
+        JPanel northPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
 
         setLocation(100, 50);
 
         fieldView = new FieldView(height, width);
 
         Container contents = getContentPane();
-        contents.add(stepLabel, BorderLayout.NORTH);
+
+        contents.add(northPanel, BorderLayout.NORTH);
+        northPanel.add(stepLabel);
+        northPanel.add(weatherLabel);
+        northPanel.add(timeLabel);
+
         contents.add(fieldView, BorderLayout.CENTER);
         contents.add(population, BorderLayout.SOUTH);
         pack();
@@ -133,6 +147,8 @@ public class SimulatorView extends JFrame {
 
 
         population.setText(POPULATION_PREFIX + stats.getPopulationDetails(field));
+        timeLabel.setText(TIME_PREFIX + worldState.getTimeOfDay().toString());
+        weatherLabel.setText(WEATHER_PREFIX + worldState.getWeatherState().toString());
         fieldView.repaint();
     }
 

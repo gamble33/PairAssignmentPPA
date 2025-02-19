@@ -1,6 +1,5 @@
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -129,15 +128,45 @@ public abstract class Animal extends LivingEntity {
         return adjacent.getFirst();
     }
 
-    protected void moveRandomly(Field field) {
-        List<Location> adjacent = field.getFreeAdjacentLocations(getLocation());
+    /**
+     * Moves the animal to a random adjacent location in the given field, if available.
+     * If no adjacent locations are free, the animal remains in its current location.
+     *
+     * @param nextFieldState The field representing the next state of the simulation,
+     *                       where the animal will potentially move.
+     */
+    protected void moveRandomly(Field nextFieldState) {
+        List<Location> adjacent = nextFieldState.getFreeAdjacentLocations(getLocation());
         Location nextLocation;
         if (adjacent.isEmpty()) nextLocation = getLocation();
         else nextLocation = adjacent.removeFirst();
-        advanceTo(field, nextLocation);
+        advanceTo(nextFieldState, nextLocation);
     }
 
-    private void findWithinRadius(Field field, float radius, Supplier<Location> closestLocationSupplier, Function<Location, Boolean> checkContains, Consumer<Location> onFound) {
+    /**
+     * Checks if there is food in any of the adjacent locations to the current location.
+     * If food is found, the food is consumed, and the method returns true. This method only
+     * moves the animal if food is found.
+     *
+     * @param field The field in which the animal will be located in the next simulation state.
+     * @return True if food is found and consumed in an adjacent location, otherwise false.
+     */
+    protected boolean checkForFoodAdjacent(Field field) {
+        List<Location> adjacent = field.getAdjacentLocations(getLocation());
+        for (Location location : adjacent) {
+            if (doesLocationContainFood(field, location)) {
+                eatFood(field, location);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    protected void remainInSameLocation(Field nextFieldState) {
+        advanceTo(nextFieldState, getLocation());
+    }
+
+    protected void findWithinRadius(Field field, float radius, Supplier<Location> closestLocationSupplier, Function<Location, Boolean> checkContains, Consumer<Location> onFound) {
         Location goal = closestLocationSupplier.get();
         Location nextLocationTowardsGoal;
 
@@ -173,7 +202,7 @@ public abstract class Animal extends LivingEntity {
         }
     }
 
-    private void eatFood(Field field, Location location) {
+    protected void eatFood(Field field, Location location) {
         LivingEntity food = field.getLivingEntity(location);
         foodLevel = food.getFoodValue();
         food.setDead();
@@ -199,7 +228,7 @@ public abstract class Animal extends LivingEntity {
      * @param radius The radius within which to locate the closest food source.
      * @return The location of the closest food source, or null if no food source is found.
      */
-    private Location findClosestFoodSource(Field field, float radius) {
+    protected Location findClosestFoodSource(Field field, float radius) {
         return findClosest(
                 field,
                 radius,
@@ -207,20 +236,7 @@ public abstract class Animal extends LivingEntity {
         );
     }
 
-    /**
-     * Finds the closest mate within a specified radius in the given field.
-     *
-     * @param field  The field in which to search for food sources.
-     * @param radius The radius within which to locate the closest food source.
-     * @return The location of the closest mate, or null if no mate is found.
-     */
-    private Location findClosestMate(Field field, float radius) {
-        return findClosest(
-                field,
-                radius,
-                (location) -> doesLocationContainMate(field, location)
-        );
-    }
+
 
     /**
      * Finds the closest location within a specified radius from the current location
@@ -231,7 +247,7 @@ public abstract class Animal extends LivingEntity {
      * @param conditionPredicate  A function that determines whether a location satisfies the condition.
      * @return The closest location that satisfies the condition, or null if no such location is found.
      */
-    private Location findClosest(Field field, float radius, Function<Location, Boolean> conditionPredicate) {
+    protected Location findClosest(Field field, float radius, Function<Location, Boolean> conditionPredicate) {
         List<Location> nearBy = field.getLocationsWithinRadius(getLocation(), radius);
         double minDistance = Float.MAX_VALUE;
         Location closest = null;
@@ -246,18 +262,14 @@ public abstract class Animal extends LivingEntity {
         return closest;
     }
 
-    private boolean doesLocationContainFood(Field field, Location location) {
+    protected boolean doesLocationContainFood(Field field, Location location) {
         LivingEntity livingEntity = field.getLivingEntity(location);
         if (livingEntity == null) return false;
 
         return livingEntity.isAlive() && foodSources.contains(livingEntity.getClass());
     }
 
-    private boolean doesLocationContainMate(Field field, Location location) {
-        LivingEntity livingEntity = field.getLivingEntity(location);
-        if (livingEntity == null) return false;
-        return livingEntity.isAlive() && this.getClass().equals(livingEntity.getClass());
-    }
+
 
     /**
      * A fox can breed if it has reached the breeding age.

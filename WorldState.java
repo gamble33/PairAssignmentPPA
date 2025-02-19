@@ -1,6 +1,10 @@
+import java.util.Random;
+
 public class WorldState {
     public static final int DAY_LENGTH = 200;
     public static final int NIGHT_LENGTH = 100;
+
+    private static final Random rand = Randomizer.getRandom();
     private WeatherState weatherState;
     private TimeOfDay timeOfDay;
     private int time;
@@ -23,6 +27,13 @@ public class WorldState {
 
     public void setWeatherState(WeatherState weatherState) {
         this.weatherState = weatherState;
+    }
+
+    public void setRandomWeather() {
+        double randomNumber = rand.nextDouble();
+        if (randomNumber < 0.80d) setWeatherState(WeatherState.Sunny);
+        else if (randomNumber < 0.9d) setWeatherState(WeatherState.Thunderstorm);
+        else setWeatherState(WeatherState.Heatwave);
     }
 
     public TimeOfDay getTimeOfDay() {

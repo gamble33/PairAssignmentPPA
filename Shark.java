@@ -11,9 +11,9 @@ public class Shark extends GenderedAnimal
 {
     // Characteristics shared by all sharks (class variables).
     // The age at which a shark can start to breed.
-    private static final int BREEDING_AGE = 15;
+    private static final int BREEDING_AGE = 2;
     // The age to which a shark can live.
-    private static final int MAX_AGE = 1500;
+    private static final int MAX_AGE = 100;
     // The likelihood of a shark breeding.
     private static final double BREEDING_PROBABILITY = 0.08;
     // The likelihood of a shark doing nothing during the day.
@@ -59,31 +59,28 @@ public class Shark extends GenderedAnimal
             if (
                     worldState.getTimeOfDay() == TimeOfDay.Day
                     && rand.nextDouble() < IDLE_PROBABILITY
-            ) return;
+            ) {
+                remainInSameLocation(nextFieldState);
+                return;
+            }
+
 
             List<Location> freeLocations =
                     nextFieldState.getFreeAdjacentLocations(getLocation());
 
-            // Check For Mate
-            if(!freeLocations.isEmpty()) {
-                checkForMate(currentField, nextFieldState);
-            }
-
-            // Move towards a source of food if found.
-            Location nextLocation = findFood(currentField);
-            if(nextLocation == null && ! freeLocations.isEmpty()) {
-                // No food found - try to move to a free location.
-                nextLocation = freeLocations.removeFirst();
-            }
-            // See if it was possible to move.
-            if(nextLocation != null) {
-                setLocation(nextLocation);
-                nextFieldState.placeEntity(this, nextLocation);
-            }
-            else {
+            if (freeLocations.isEmpty()) {
                 // Overcrowding.
                 setDead();
+                return;
             }
+
+            // If not too hungry, shark will search for mate. otherwise, it will search for food.
+            checkForMate(currentField, nextFieldState);
+            if (age >= breedingAge && foodLevel > 15) findMateWithinRadius(nextFieldState, 15f);
+            else {
+                findFoodWithinRadius(nextFieldState, 10f);
+            }
+
         }
     }
 

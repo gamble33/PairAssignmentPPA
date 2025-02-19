@@ -3,7 +3,7 @@ import java.util.*;
 /**
  * A simple predator-prey simulator, based on a rectangular field containing 
  * rabbits and foxes.
- * 
+ *
  * @author David J. Barnes and Michael Kölling
  * @version 7.1
  */
@@ -51,6 +51,7 @@ public class Simulator
         // Initialise world state.
         worldState = new WorldState();
         worldState.setTimeOfDay(TimeOfDay.Day);
+        worldState.setWeatherState(WeatherState.Sunny);
 
         reset();
     }
@@ -120,6 +121,10 @@ public class Simulator
                 System.out.println("It turned day.");
                 worldState.setTimeOfDay(TimeOfDay.Day);
                 worldState.setTime(0);
+
+                // On the dawn of every day, the weather may change.
+                // Most days will be sunny days.
+                worldState.setRandomWeather();
             }
         } else if (worldState.getTimeOfDay() == TimeOfDay.Day) {
             if (worldState.getTime() >= WorldState.DAY_LENGTH) {

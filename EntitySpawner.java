@@ -21,10 +21,10 @@ public class EntitySpawner {
     public EntitySpawner() {
         // Plants
         addSpawnRule(1, (loc) -> new Phytoplankton(true, loc));
-        addSpawnRule(0.5f, (loc) -> new Seaweed(true, loc));
+        addSpawnRule(0.25f, (loc) -> new Seaweed(true, loc));
 
         // Predators
-        addSpawnRule(0, (loc) -> new Shark(true, loc));
+        addSpawnRule(3.9f, (loc) -> new Shark(true, loc));
         addSpawnRule(0, (loc) -> new Whale(true, loc));
         addSpawnRule(0, (loc) -> new PinkDolphin(true, loc));
 
