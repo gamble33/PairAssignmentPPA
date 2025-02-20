@@ -162,27 +162,27 @@ public class Field
      */
     public boolean isViable()
     {
-        boolean rabbitFound = false;
-        boolean foxFound = false;
+        boolean fishFound = false;
+        boolean sharkFound = false;
         Iterator<LivingEntity> it = entities.iterator();
-        while(it.hasNext() && ! (rabbitFound && foxFound)) {
+        while(it.hasNext() && ! (fishFound && sharkFound)) {
             LivingEntity anEntity = it.next();
             if(anEntity instanceof Clownfish rabbit) {
                 if(rabbit.isAlive()) {
-                    rabbitFound = true;
+                    fishFound = true;
                 }
             }
             else if(anEntity instanceof Shark fox) {
                 if(fox.isAlive()) {
-                    foxFound = true;
+                    sharkFound = true;
                 }
             }
         }
-        return rabbitFound && foxFound;
+        return fishFound && sharkFound;
     }
     
     /**
-     * Get the list of animals.
+     * Get the list of entities.
      */
     public List<LivingEntity> getEntities()
     {

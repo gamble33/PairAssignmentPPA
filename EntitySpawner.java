@@ -3,6 +3,13 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
 
+/**
+ * The EntitySpawner class is responsible for spawning living entities
+ * in a simulation environment based on predefined probability weights.
+ * It allows for dynamic creation of entities at provided locations
+ * using a set of spawn rules, each of which specifies the relative
+ * frequency of an entity's appearance and the corresponding creation logic.
+ */
 public class EntitySpawner {
     private final Random rand = Randomizer.getRandom();
     private final List<EntityWeight> entityWeights = new ArrayList<>();
@@ -34,6 +41,7 @@ public class EntitySpawner {
 
         // Diseases
         addSpawnRule(0.01f, (loc) -> new DiseaseEntity(loc, Chlamydia::new));
+        addSpawnRule(0.01f, (loc) -> new DiseaseEntity(loc, FishPox::new));
 
         // Case for nothing being created, leaving the cell unoccupied.
         addSpawnRule(50, (loc) -> null);

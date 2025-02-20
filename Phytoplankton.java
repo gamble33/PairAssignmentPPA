@@ -2,9 +2,10 @@ public class Phytoplankton extends Plant {
     private static final int MAX_AGE = 350;
 
     /**
-     * Constructor for objects of class Animal.
+     * Constructs a new Phytoplankton entity with the specified properties.
      *
-     * @param location The animal's location.
+     * @param randomAge if true, assigns a random age to the Phytoplankton; otherwise, it starts at age 0
+     * @param location the initial location of the Phytoplankton in the simulation
      */
     public Phytoplankton(Boolean randomAge, Location location) {
         super(randomAge, MAX_AGE, location);

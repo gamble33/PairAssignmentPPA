@@ -1,11 +1,6 @@
 public class Seaweed extends Plant {
     private static final int MAX_AGE = 350;
 
-    /**
-     * Constructor for objects of class Animal.
-     *
-     * @param location The animal's location.
-     */
     public Seaweed(Boolean randomAge, Location location) {
         super(randomAge, MAX_AGE, location);
         foodValue = 38;

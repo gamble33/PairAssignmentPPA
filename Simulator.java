@@ -3,9 +3,9 @@ import java.util.spi.LocaleServiceProvider;
 
 /**
  * A simple predator-prey simulator, based on a rectangular field containing 
- * rabbits and foxes.
+ * sharks, clownfish, whales, plants and diseases.
  *
- * @author David J. Barnes and Michael Kölling
+ * @author David J. Barnes and Michael Kölling, George Novachuk and Ansh Thukral
  * @version 7.1
  */
 public class Simulator

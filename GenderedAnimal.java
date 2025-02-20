@@ -82,6 +82,16 @@ public abstract class GenderedAnimal extends Animal {
                 // Give birth if there is space.
                 giveBirth(nextField, nextField.getFreeAdjacentLocations(getLocation()));
                 totalMated++;
+
+                // Infect mate with all infections.
+                if (isInfected()) {
+                    getInfections().forEach(genderedAnimal::infect);
+                }
+
+                if (genderedAnimal.isInfected()) {
+                    genderedAnimal.getInfections().forEach(this::infect);
+                }
+
                 return true;
             }
         }

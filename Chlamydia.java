@@ -9,6 +9,7 @@ public class Chlamydia extends Disease {
     @Override
     public void applySymptoms() {
          super.applySymptoms();
+         if (host == null) return;
          age++;
          if (random.nextFloat() < PROBABILITY_TO_DECREASE_FOOD_LEVEL)
              host.decreaseFoodLevel(1);

@@ -1,20 +1,12 @@
 import java.util.List;
 
-/**
- * A simple model of a fox.
- * Foxes age, move, eat rabbits, and die.
- * 
- * @author David J. Barnes and Michael Kölling
- * @version 7.1
- */
 public class PinkDolphin extends GenderedAnimal
 {
-    // Characteristics shared by all foxes (class variables).
-    // The age at which a fox can start to breed.
+    // The age at which a pink dolphin can start to breed.
     private static final int BREEDING_AGE = 15;
-    // The age to which a fox can live.
+    // The age to which a pink dolphin can live.
     private static final int MAX_AGE = 150;
-    // The likelihood of a fox breeding.
+    // The likelihood of a pink dolphin breeding.
     private static final double BREEDING_PROBABILITY = 0.08;
     // The maximum number of births.
     private static final int MAX_LITTER_SIZE = 2;
@@ -25,10 +17,10 @@ public class PinkDolphin extends GenderedAnimal
     // Individual characteristics (instance fields).
 
     /**
-     * Create a fox. A fox can be created as a new born (age zero
+     * Create a pink dolphin. A pink dolphin can be created as a new born (age zero
      * and not hungry) or with a random age and food level.
      *
-     * @param randomAge If true, the fox will have random age and hunger level.
+     * @param randomAge If true, the pink dolphin will have random age and hunger level.
      * @param location The location within the field.
      */
     public PinkDolphin(Boolean randomAge, Location location)
@@ -43,8 +35,8 @@ public class PinkDolphin extends GenderedAnimal
     }
     
     /**
-     * This is what the fox does most of the time: it hunts for
-     * rabbits. In the process, it might breed, die of hunger,
+     * This is what the pink dolphin does most of the time: it hunts for
+     * clown fish. In the process, it might breed, die of hunger,
      * or die of old age.
      * @param currentField The field currently occupied.
      * @param nextFieldState The updated field.

@@ -2,7 +2,7 @@ import java.util.List;
 
 /**
  * A simple model of a clownfish.
- * Rabbits age, move, breed, and die.
+ * Clownfish age, move, breed, and die.
  *
  * @author David J. Barnes and Michael Kölling
  * @version 7.1

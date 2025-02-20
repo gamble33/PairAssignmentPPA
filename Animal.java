@@ -314,8 +314,12 @@ public abstract class Animal extends LivingEntity {
         return livingEntity.isAlive() && foodSources.contains(livingEntity.getClass());
     }
 
-    private boolean isInfected() {
+    protected boolean isInfected() {
         return !infections.isEmpty();
+    }
+
+    protected Collection<Disease> getInfections() {
+        return infections.values();
     }
 
     /**

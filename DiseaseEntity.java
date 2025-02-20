@@ -32,6 +32,13 @@ public class DiseaseEntity extends LivingEntity {
         }
     }
 
+    /**
+     * Handles the duplication process of a DiseaseEntity within the simulation, allowing it
+     * to spawn a new instance at an available adjacent location if possible.
+     *
+     * @param currentField The current state of the simulation field where the entity resides.
+     * @param nextFieldState The field state for the next step in the simulation, where the duplicated entity will be placed.
+     */
     public void duplicate(Field currentField, Field nextFieldState){
         nextFieldState.placeEntity(this, getLocation());
         List<Location> adjacent = currentField.getFreeAdjacentLocations(getLocation());

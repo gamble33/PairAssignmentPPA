@@ -17,7 +17,6 @@ public abstract class Disease {
         if (checkCanBeCured()) {
             onCure();
             setHost(null);
-            return;
         }
     }
 
