@@ -3,9 +3,9 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Common elements of foxes and rabbits.
+ * Common elements of seaweed and rabbits.
  *
- * @author David J. Barnes and Michael Kölling
+ * @author George Novachuk and Ansh Thukral
  * @version 7.0
  */
 public abstract class Plant extends LivingEntity {

@@ -56,12 +56,14 @@ public class Shark extends GenderedAnimal
 
             // If it is day, there is a good chance the shark will sleep and do nothing for a
             // given iteration.
-            if (
+            if (rand.nextDouble() < IDLE_PROBABILITY) {
+                if (
                     worldState.getTimeOfDay() == TimeOfDay.Day
-                    && rand.nextDouble() < IDLE_PROBABILITY
-            ) {
-                remainInSameLocation(nextFieldState);
-                return;
+                    || worldState.getWeatherState() == WeatherState.Thunderstorm
+                ) {
+                    remainInSameLocation(nextFieldState);
+                    return;
+                }
             }
 
 
