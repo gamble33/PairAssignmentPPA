@@ -7,8 +7,8 @@ import java.util.function.Supplier;
 /**
  * Common elements of all animals.
  *
- * @author David J. Barnes and Michael Kölling
- * @version 7.0
+ * @author David J. Barnes, Michael Kölling, George Novachuk and Ansh Thukral
+ * @version 7.1
  */
 public abstract class Animal extends LivingEntity {
     private static int infectedCount = 0;
@@ -18,8 +18,17 @@ public abstract class Animal extends LivingEntity {
 
     protected int breedingAge;
     protected double breedingProbability;
+    /**
+     * The maximum amount of children an animal can have during a single birth cycle.
+     */
     protected int maxLitterSize;
+    /**
+     * The list of class types which this animal will eat.
+     */
     protected List<Class<?>> foodSources;
+    /**
+     * A map of class types of diseases to the individual disease instance.
+     */
     private final HashMap<Class<?>, Disease> infections = new HashMap<>();
 
     /**
@@ -106,6 +115,11 @@ public abstract class Animal extends LivingEntity {
         return foodLocation;
     }
 
+    /**
+     * Finds food within a given radius and advances 1 cell towards it.
+     * @param field The
+     * @param radius
+     */
     protected void findFoodWithinRadius(Field field, float radius) {
         findWithinRadius(
                 field,
@@ -144,6 +158,9 @@ public abstract class Animal extends LivingEntity {
         }
     }
 
+    /**
+     *
+     */
     protected Location getRandomAdjacentLocation(Field field) {
         List<Location> adjacent = field.getFreeAdjacentLocations(getLocation());
         if (adjacent.isEmpty()) return null;
@@ -188,6 +205,9 @@ public abstract class Animal extends LivingEntity {
         advanceTo(nextFieldState, getLocation());
     }
 
+    /**
+     *
+     */
     protected void findWithinRadius(Field field, float radius, Supplier<Location> closestLocationSupplier, Function<Location, Boolean> checkContains, Consumer<Location> onFound) {
         Location goal = closestLocationSupplier.get();
         Location nextLocationTowardsGoal;
@@ -224,6 +244,9 @@ public abstract class Animal extends LivingEntity {
         }
     }
 
+    /**
+     *
+     */
     protected void eatFood(Field field, Location location) {
         LivingEntity food = field.getLivingEntity(location);
         foodLevel = food.getFoodValue();

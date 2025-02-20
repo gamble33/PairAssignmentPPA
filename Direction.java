@@ -1,3 +1,6 @@
+/**
+ * Represents a direction from one location to another as a 2-dimensional vector.
+ */
 public record Direction(double x, double y) {
     public Direction ceil() {
         return new Direction(

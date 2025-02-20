@@ -1,28 +1,28 @@
 import java.util.List;
 
 /**
- * A simple model of a rabbit.
+ * A simple model of a clownfish.
  * Rabbits age, move, breed, and die.
  *
  * @author David J. Barnes and Michael Kölling
  * @version 7.1
  */
 public class Clownfish extends Animal {
-    // Characteristics shared by all rabbits (class variables).
-    // The age at which a rabbit can start to breed.
+    // Characteristics shared by all clownfish (class variables).
+    // The age at which a clownfish can start to breed.
     private static final int BREEDING_AGE = 5;
-    // The age to which a rabbit can live.
+    // The age to which a clownfish can live.
     private static final int MAX_AGE = 40;
-    // The likelihood of a rabbit breeding.
+    // The likelihood of a clownfish breeding.
     private static final double BREEDING_PROBABILITY = 0.22;
     // The maximum number of births.
     private static final int MAX_LITTER_SIZE = 4;
 
     /**
-     * Create a new rabbit. A rabbit may be created with age
+     * Create a new clownfish. A clownfish may be created with age
      * zero (a newborn) or with a random age.
      *
-     * @param randomAge If true, the rabbit will have a random age.
+     * @param randomAge If true, the clownfish will have a random age.
      * @param location  The location within the field.
      */
     public Clownfish(Boolean randomAge, Location location) {
@@ -37,7 +37,7 @@ public class Clownfish extends Animal {
     }
 
     /**
-     * This is what the rabbit does most of the time - it runs
+     * This is what the clownfish does most of the time - it runs
      * around. Sometimes it will breed or die of old age.
      *
      * @param currentField   The field occupied.
@@ -64,7 +64,7 @@ public class Clownfish extends Animal {
 
     @Override
     public String toString() {
-        return "Rabbit{" +
+        return "Clownfish{" +
                 "age=" + age +
                 ", alive=" + isAlive() +
                 ", location=" + getLocation() +
