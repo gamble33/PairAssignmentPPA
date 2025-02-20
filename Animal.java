@@ -117,8 +117,8 @@ public abstract class Animal extends LivingEntity {
 
     /**
      * Finds food within a given radius and advances 1 cell towards it.
-     * @param field The
-     * @param radius
+     * @param field The field to check for food within.
+     * @param radius The radius to check within.
      */
     protected void findFoodWithinRadius(Field field, float radius) {
         findWithinRadius(
@@ -131,13 +131,13 @@ public abstract class Animal extends LivingEntity {
     }
 
     /**
-     * Check whether this fox is to give birth at this step.
+     * Check whether this animal is to give birth at this step.
      * New births will be made into free adjacent locations.
      *
      * @param freeLocations The locations that are free in the current field.
      */
     protected void giveBirth(Field nextFieldState, List<Location> freeLocations) {
-        // New foxes are born into adjacent locations.
+        // New animales are born into adjacent locations.
         // Get a list of adjacent free locations.
         int births = generateNumberOfBirths();
         Class<?> runtimeClass = this.getClass();
@@ -244,9 +244,6 @@ public abstract class Animal extends LivingEntity {
         }
     }
 
-    /**
-     *
-     */
     protected void eatFood(Field field, Location location) {
         LivingEntity food = field.getLivingEntity(location);
         foodLevel = food.getFoodValue();
@@ -323,7 +320,7 @@ public abstract class Animal extends LivingEntity {
     }
 
     /**
-     * A fox can breed if it has reached the breeding age.
+     * A animal can breed if it has reached the breeding age.
      */
     private boolean canBreed() {
         return age >= breedingAge;
@@ -343,11 +340,6 @@ public abstract class Animal extends LivingEntity {
             births = 0;
         }
         return births;
-    }
-
-    private boolean checkAlreadyInfected(Disease disease) {
-        // todo.
-        return true;
     }
 
 }
