@@ -41,7 +41,6 @@ public class EntitySpawner {
 
         // Diseases
         addSpawnRule(0.01f, (loc) -> new DiseaseEntity(loc, Chlamydia::new));
-        addSpawnRule(0.01f, (loc) -> new DiseaseEntity(loc, FishPox::new));
 
         // Case for nothing being created, leaving the cell unoccupied.
         addSpawnRule(50, (loc) -> null);
