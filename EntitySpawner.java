@@ -20,17 +20,17 @@ public class EntitySpawner {
 
     public EntitySpawner() {
         // Plants
-        addSpawnRule(1, (loc) -> new Phytoplankton(true, loc));
+        addSpawnRule(1f, (loc) -> new Phytoplankton(true, loc));
         addSpawnRule(0.25f, (loc) -> new Seaweed(true, loc));
 
         // Predators
         addSpawnRule(3.9f, (loc) -> new Shark(true, loc));
-        addSpawnRule(0, (loc) -> new Whale(true, loc));
-        addSpawnRule(0, (loc) -> new PinkDolphin(true, loc));
+        addSpawnRule(0.5f, (loc) -> new Whale(true, loc));
+        addSpawnRule(0.2f, (loc) -> new PinkDolphin(true, loc));
 
         // Prey
         addSpawnRule(1, (loc) -> new Clownfish(true, loc));
-        addSpawnRule(0, (loc) -> new Turtle(true, loc));
+        addSpawnRule(0.5f, (loc) -> new Turtle(true, loc));
 
         // Diseases
         addSpawnRule(0.01f, (loc) -> new DiseaseEntity(loc, Chlamydia::new));

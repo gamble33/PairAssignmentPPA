@@ -80,7 +80,7 @@ public class PinkDolphin extends GenderedAnimal
 
     @Override
     public String toString() {
-        return "Fox{" +
+        return "PinkDolphin{" +
                 "age=" + age +
                 ", alive=" + isAlive() +
                 ", location=" + getLocation() +

@@ -131,21 +131,21 @@ public class Field
      */
     public void fieldStats()
     {
-        int numFoxes = 0, numRabbits = 0;
+        int numSharks = 0, numClownFish = 0;
         for(LivingEntity anEntity : field.values()) {
-            if(anEntity instanceof Shark fox) {
-                if(fox.isAlive()) {
-                    numFoxes++;
+            if(anEntity instanceof Shark shark) {
+                if(shark.isAlive()) {
+                    numSharks++;
                 }
             }
-            else if(anEntity instanceof Clownfish rabbit) {
-                if(rabbit.isAlive()) {
-                    numRabbits++;
+            else if(anEntity instanceof Clownfish clownFish) {
+                if(clownFish.isAlive()) {
+                    numClownFish++;
                 }
             }
         }
-        System.out.println("Rabbits: " + numRabbits +
-                           " Foxes: " + numFoxes);
+        System.out.println("Clown Fish: " + numClownFish +
+                           " Sharks: " + numSharks);
     }
 
     /**
