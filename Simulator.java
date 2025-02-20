@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.spi.LocaleServiceProvider;
 
 /**
  * A simple predator-prey simulator, based on a rectangular field containing 
@@ -14,6 +15,8 @@ public class Simulator
     private static final int DEFAULT_WIDTH = 240;
     // The default depth of the grid.
     private static final int DEFAULT_DEPTH = 160;
+    private static final double DISEASE_SPAWN_PROBABILITY = 0.1f;
+    private static final Random rand = Randomizer.getRandom();
 
     private final WorldState worldState;
     // The current state of the field.
@@ -91,12 +94,15 @@ public class Simulator
         // the next step.
         Field nextFieldState = new Field(field.getDepth(), field.getWidth());
         adjustTimeOfDay();
+        Animal.resetInfectedCount();
 
         // Call every entity's act method.
         List<LivingEntity> entities = field.getEntities();
         for (LivingEntity anEntity : entities) {
             anEntity.act(field, nextFieldState, worldState);
         }
+
+        attemptSpawnDisease(nextFieldState);
         
         // Replace the old state with the new one.
         field = nextFieldState;
@@ -113,6 +119,17 @@ public class Simulator
         step = 0;
         populate();
         view.showStatus(step, field, worldState);
+    }
+
+    private void attemptSpawnDisease(Field nextFieldState) {
+        if (rand.nextDouble() > DISEASE_SPAWN_PROBABILITY) return;
+
+        int randomRow = rand.nextInt(field.getDepth());
+        int randomCol = rand.nextInt(field.getWidth());
+        Location location = new Location(randomRow, randomCol);
+        if (nextFieldState.getLivingEntity(location) == null) {
+            nextFieldState.placeEntity(new DiseaseEntity(location, Chlamydia::new), location);
+        }
     }
 
     private void adjustTimeOfDay() {

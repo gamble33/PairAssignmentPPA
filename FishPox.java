@@ -1,6 +1,6 @@
 import java.util.Random;
 
-public class Chlamydia extends Disease {
+public class FishPox extends Disease {
     private static final float PROBABILITY_TO_DECREASE_FOOD_LEVEL = 0.3f;
     private static int MAX_AGE = 15;
     private final Random random = Randomizer.getRandom();

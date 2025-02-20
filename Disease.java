@@ -3,10 +3,6 @@
 public abstract class Disease {
     protected Animal host;
 
-    public Disease(Animal host) {
-        this.host = host;
-    }
-
     public void setHost(Animal host) {
         this.host = host;
     }
@@ -16,14 +12,23 @@ public abstract class Disease {
      * This method is intended to simulate the effects of the disease on its host. This method is
      * called every step of the simulation.
      */
-    public abstract void applySymptoms();
+    public void applySymptoms() {
+        if (host == null) return;
+        if (checkCanBeCured()) {
+            onCure();
+            setHost(null);
+            return;
+        }
+    }
 
     /**
      * This method is called immediately prior to the eradication of the disease. Serves as a way
      * to benefit the animal once it is cured.
      */
     public void onCure() {
+        if (host == null) return;
         host.increaseFoodLevel(5);
+        host.cure(this);
     }
 
     /**

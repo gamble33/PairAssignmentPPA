@@ -11,6 +11,8 @@ import java.util.function.Supplier;
  * @version 7.0
  */
 public abstract class Animal extends LivingEntity {
+    private static int infectedCount = 0;
+
     // A shared random number generator to control breeding.
     protected static final Random rand = Randomizer.getRandom();
 
@@ -33,6 +35,10 @@ public abstract class Animal extends LivingEntity {
     @Override
     public void act(Field currentField, Field nextFieldState, WorldState worldState) {
         super.act(currentField, nextFieldState, worldState);
+        if (isInfected()) infectedCount++;
+        for (Disease disease : infections.values()) {
+            disease.applySymptoms();
+        }
     }
 
     /**
@@ -45,6 +51,7 @@ public abstract class Animal extends LivingEntity {
      */
     public void infect(Disease disease) {
         infections.putIfAbsent(disease.getClass(), disease);
+        disease.setHost(this);
     }
 
     /**
@@ -54,6 +61,21 @@ public abstract class Animal extends LivingEntity {
      */
     public void cure(Disease disease) {
         infections.remove(disease.getClass());
+        disease.setHost(null);
+    }
+
+    public static int getInfectedCount() {
+        return infectedCount;
+    }
+
+    public static void resetInfectedCount() {
+        infectedCount = 0;
+    }
+
+    @Override
+    protected void setDead() {
+        super.setDead();
+        infections.clear();
     }
 
     /**
@@ -269,7 +291,9 @@ public abstract class Animal extends LivingEntity {
         return livingEntity.isAlive() && foodSources.contains(livingEntity.getClass());
     }
 
-
+    private boolean isInfected() {
+        return !infections.isEmpty();
+    }
 
     /**
      * A fox can breed if it has reached the breeding age.

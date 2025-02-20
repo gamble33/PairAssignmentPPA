@@ -24,10 +24,12 @@ public class SimulatorView extends JFrame {
     private final String POPULATION_PREFIX = "Population: ";
     private final String TIME_PREFIX = "Time: ";
     private final String WEATHER_PREFIX = "Weather: ";
+    private final String INFECTED_PREFIX = "Total Infected: ";
     private final JLabel stepLabel;
     private final JLabel population;
     private final JLabel timeLabel;
     private final JLabel weatherLabel;
+    private final JLabel infectedLabel;
     private final FieldView fieldView;
 
     // A map for storing colors for participants in the simulation
@@ -57,6 +59,7 @@ public class SimulatorView extends JFrame {
         population = new JLabel(POPULATION_PREFIX, JLabel.CENTER);
         timeLabel = new JLabel(TIME_PREFIX, JLabel.CENTER);
         weatherLabel = new JLabel(WEATHER_PREFIX, JLabel.CENTER);
+        infectedLabel = new JLabel(INFECTED_PREFIX, JLabel.CENTER);
         stepLabel.setBackground(Color.red);
 
         // North row of text.
@@ -72,6 +75,7 @@ public class SimulatorView extends JFrame {
         northPanel.add(stepLabel);
         northPanel.add(weatherLabel);
         northPanel.add(timeLabel);
+        northPanel.add(infectedLabel);
 
         contents.add(fieldView, BorderLayout.CENTER);
         contents.add(population, BorderLayout.SOUTH);
@@ -149,6 +153,7 @@ public class SimulatorView extends JFrame {
         population.setText(POPULATION_PREFIX + stats.getPopulationDetails(field));
         timeLabel.setText(TIME_PREFIX + worldState.getTimeOfDay().toString());
         weatherLabel.setText(WEATHER_PREFIX + worldState.getWeatherState().toString());
+        infectedLabel.setText(INFECTED_PREFIX + Animal.getInfectedCount());
         fieldView.repaint();
     }
 

@@ -33,7 +33,7 @@ public class EntitySpawner {
         addSpawnRule(0, (loc) -> new Turtle(true, loc));
 
         // Diseases
-        addSpawnRule(0.01f, (loc) -> new DiseaseEntity(loc, new Chlamydia(null)));
+        addSpawnRule(0.01f, (loc) -> new DiseaseEntity(loc, Chlamydia::new));
 
         // Case for nothing being created, leaving the cell unoccupied.
         addSpawnRule(50, (_) -> null);

@@ -31,8 +31,8 @@ public class WorldState {
 
     public void setRandomWeather() {
         double randomNumber = rand.nextDouble();
-        if (randomNumber < 0.80d) setWeatherState(WeatherState.Sunny);
-        else if (randomNumber < 0.9d) setWeatherState(WeatherState.Thunderstorm);
+        if (randomNumber < 0.70d) setWeatherState(WeatherState.Sunny);
+        else if (randomNumber < 0.85d) setWeatherState(WeatherState.Thunderstorm);
         else setWeatherState(WeatherState.Heatwave);
     }
 

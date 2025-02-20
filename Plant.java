@@ -1,5 +1,6 @@
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Common elements of foxes and rabbits.
@@ -14,6 +15,8 @@ public abstract class Plant extends LivingEntity {
     protected double probabilityForGrowth = 0.10;
     /// The amount of food points gained per step of simulation due to photosynthesis.
     protected int photoSynthesisEffectiveness = 3;
+    /// The amount of food produced is multiplied by this scalar.
+    private float effectivenessMultiplier = 1f;
 
     public Plant(Boolean randomAge, int maxAge, Location location) {
         super(randomAge, maxAge, location);
@@ -35,9 +38,16 @@ public abstract class Plant extends LivingEntity {
     }
 
     private void photosynthesize(WorldState worldState) {
+        // Plant photosynthesis effectiveness varies depending on the weather.
+        switch (worldState.getWeatherState()) {
+            case Sunny -> effectivenessMultiplier = 1f;
+            case Heatwave -> effectivenessMultiplier = 0.3f;
+            case Thunderstorm -> effectivenessMultiplier = 1.5f;
+        }
+
         // If there is sun, the plant will gain food via photosynthesis
         if (worldState.getTimeOfDay() == TimeOfDay.Day) {
-            foodLevel += photoSynthesisEffectiveness;
+            foodLevel += (int) (photoSynthesisEffectiveness * effectivenessMultiplier);
         }
     }
 
